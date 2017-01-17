@@ -1,14 +1,14 @@
 const pg = require('pg');
 const bcrypt = require('bcryptjs');
 
-const connectionString = process.env.DATABASE_URL || 'pg://postgres:postgres@localhost:5432/gabinet?stringtype=unspecified'; // 'pg://[user]:[password]@localhost/[db_name]'
+const serverConfig = require('./server-config');
 
 module.exports.Users = {
 	findByEmail: (email, callback) => {
 		var results = [],
 			query = {};
 
-		pg.connect(connectionString, (err, client, done) => {
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
 			if (err) {
 				done(err);
 				callback(err, undefined);
@@ -30,7 +30,7 @@ module.exports.Users = {
 		var results = [],
 			query = {};
 
-		pg.connect(connectionString, (err, client, done) => {
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
 			if (err) {
 				done(err);
 				callback(err, undefined);

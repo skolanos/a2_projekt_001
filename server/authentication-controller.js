@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+const serverConfig = require('./server-config');
 const dataModel = require('./data-model-wrapper');
 
 const authenticatedUsers = [];
@@ -55,7 +56,7 @@ module.exports.login = (req, res) => {
 			}
 			else {
 				if (results.length === 1) {
-					token = jwt.sign(results[0], 'sekretne_haslo_przechowac_w_config', { expiresIn: 60 * 24 });
+					token = jwt.sign(results[0], serverConfig.jsonwebtoken.secret, { expiresIn: 60 * 24 });
 					authenticatedUsers.push({
 						user: results[0],
 						token: token
@@ -75,7 +76,7 @@ module.exports.authenticateRequest = (req, res) => {
 	var token = req.headers['x-accss-token'] || req.body.token || req.query.token;
 
 	if (token) {
-		jwt.verify(token, 'sekretne_haslo_przechowac_w_config', (err, decoded) => {
+		jwt.verify(token, serverConfig.jsonwebtoken.secret, (err, decoded) => {
 			if (err) {
 				res.json({ status: 400, message: 'Nieprawidłowa identyfikacja sesji.', obj: [] });
 			}
