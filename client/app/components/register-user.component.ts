@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router }    from '@angular/router';
 
 import { AuthenticationService } from '../services/authentication.service';
 
@@ -14,7 +15,10 @@ export class RegisterUserComponent {
 	password: string;
 	messages: string[];
 
-	constructor(private authenticationService: AuthenticationService) {
+	constructor(
+		private authenticationService: AuthenticationService,
+		private router: Router
+	) {
 		this.firstName = '';
 		this.surname = '';
 		this.email = '';
@@ -51,6 +55,12 @@ export class RegisterUserComponent {
 				if (data.status === 200) {
 					this.authenticationService.login(this.email, this.password).subscribe(data => {
 						console.log('LoginComponent.login():', data);
+						if (this.authenticationService.getUserToken() !== '') {
+							this.router.navigate(['/main']);
+						}
+						else {
+							console.error('LoginComponent.doLogin() error:', data.message);
+						}
 					}, error => {
 						console.error('LoginComponent.login() error:', error);
 					});
