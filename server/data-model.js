@@ -70,7 +70,7 @@ module.exports.Users = {
 						callback(err, undefined);
 					}
 					else {
-						pg.connect(connectionString, (err, client, done) => {
+						pg.connect(serverConfig.database.connectionString, (err, client, done) => {
 							if (err) {
 								done(err);
 								callback(err, undefined);
