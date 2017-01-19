@@ -10,6 +10,6 @@ module.exports = {
 		connectionString: process.env.DATABASE_URL || 'pg://postgres:postgres@localhost:5432/gabinet?stringtype=unspecified'
 	},
 	jsonwebtoken: {
-		secret: 'sekretne_haslo_przechowac_w_config'
+		secret: 'ty4387th4387th'
 	}
 };

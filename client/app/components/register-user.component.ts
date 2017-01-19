@@ -5,7 +5,7 @@ import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
 	moduleId: module.id,
-	selector: 'register-user-form',
+	selector: 'register-user-component',
 	templateUrl: 'register-user.component.html'
 })
 export class RegisterUserComponent {
@@ -13,12 +13,14 @@ export class RegisterUserComponent {
 	surname: string;
 	email: string;
 	password: string;
+	processiong: boolean;
 	messages: string[];
 
 	constructor(
 		private authenticationService: AuthenticationService,
 		private router: Router
 	) {
+		this.processiong = false;
 		this.firstName = '';
 		this.surname = '';
 		this.email = '';
@@ -49,27 +51,31 @@ export class RegisterUserComponent {
 		return res;
 	}
 	doRegister(): void {
+		console.log('RegisterUserComponent.doRegister() start:');
 		if (this.checkForm()) {
+			this.processiong = true;
 			this.authenticationService.register(this.firstName, this.surname, this.email, this.password).subscribe(data => {
-				console.log('LoginComponent.register():', data);
+				this.processiong = false;
+				console.log('RegisterUserComponent.doRegister() subscribe:', data);
 				if (data.status === 200) {
 					this.authenticationService.login(this.email, this.password).subscribe(data => {
-						console.log('LoginComponent.login():', data);
+						console.log('RegisterUserComponent.doRegister().login():', data);
 						if (this.authenticationService.getUserToken() !== '') {
-							this.router.navigate(['/main']);
+							this.router.navigate(['/items-list']);
 						}
 						else {
-							console.error('LoginComponent.doLogin() error:', data.message);
+							console.error('RegisterUserComponent.doRegister().login() subscribe ale brak tokena:', data);
 						}
 					}, error => {
-						console.error('LoginComponent.login() error:', error);
+						console.error('RegisterUserComponent.doRegister().login() error:', error);
 					});
 				}
 				else {
 					this.messages.push(data.message);
 				}
 			}, error => {
-				console.error('LoginComponent.register() error:', error);
+				this.processiong = false;
+				console.error('RegisterUserComponent.doRegister() error:', error);
 				this.messages.push(error);
 			});
 		}

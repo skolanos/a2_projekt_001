@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const serverConfig = require('./server-config');
-const dataModel = require('./data-model-wrapper');
+const dataModel = require('./data-model');
 
 const authenticatedUsers = [];
 

@@ -120,3 +120,27 @@ module.exports.Users = {
 		});
 	}
 };
+module.exports.Items = {
+	findAll: (offset, limit, callback) => {
+		var results = [],
+			query = {};
+
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined);
+			}
+			else {
+				results = [];
+				query = client.query('SELECT t_id AS id, t_nazwa AS nazwa, t_link AS link, kat_id AS kat_id, kat_nazwa AS kat_nazwa FROM towary LEFT JOIN kategorie ON (t_kat_id=kat_id) ORDER BY t_nazwa LIMIT $1 OFFSET $2', [limit, offset]);
+				query.on('row', (row) => {
+					results.push(row);
+				});
+				query.on('end', () => {
+					done();
+					callback(undefined, results);
+				})
+			}
+		});
+	}
+};

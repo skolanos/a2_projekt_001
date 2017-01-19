@@ -1,0 +1,42 @@
+<div class="container">
+	<h1 class="page-header">Lista produktów - oferta</h1>
+	<div class="alert alert-danger" *ngIf="messages.length > 0">
+		<strong>Informacje:</strong><br>
+		<ul>
+			<li *ngFor="let message of messages">{{message}}</li>
+		</ul>
+	</div>
+	<table class="table table-striped table-bordered table-list">
+		<thead>
+			<tr>
+				<th>Kategoria</th>
+				<th>Nazwa</th>
+				<th>Link</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let item of items">
+				<td>{{item.category}}</td>
+				<td>{{item.name}}</td>
+				<td>{{item.link}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<nav>
+		<ul class="pagination justify-content-center">
+			<li class="page-item">
+				<a class="page-link" href="#">
+					<span aria-hidden="true">&laquo;</span>
+				</a>
+			</li>
+			<li class="page-item"><a class="page-link" href="#">1</a></li>
+			<li class="page-item"><a class="page-link" href="#">2</a></li>
+			<li class="page-item"><a class="page-link" href="#">3</a></li>
+			<li class="page-item">
+				<a class="page-link" href="#">
+					<span aria-hidden="true">&raquo;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+</div>

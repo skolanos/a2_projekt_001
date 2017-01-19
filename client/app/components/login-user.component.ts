@@ -5,32 +5,37 @@ import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
 	moduleId: module.id,
-	selector: 'login-form',
-	templateUrl: 'login.component.html'
+	selector: 'login-user-component',
+	templateUrl: 'login-user.component.html'
 })
-export class LoginComponent {
+export class LoginUserComponent {
 	login: string;
 	password: string;
+	processing: boolean;
 
 	constructor(
 		private authenticationService: AuthenticationService,
 		private router: Router
 	) {
+		this.processing = false;
 		this.login = '';
 		this.password = '';
 	}
 	doLogin(): void {
-		console.log('LoginComponent.doLogin(): ', this.login, this.password);
+		console.log('LoginUserComponent.doLogin() start: ', this.login, this.password);
+		this.processing = true;
 		this.authenticationService.login(this.login, this.password).subscribe(data => {
-			console.log('LoginComponent.doLogin():', data);
+			this.processing = false;
+			console.log('LoginUserComponent.doLogin() subscribe:', data);
 			if (this.authenticationService.getUserToken() !== '') {
-				this.router.navigate(['/main']);
+				this.router.navigate(['/items-list']);
 			}
 			else {
-				console.error('LoginComponent.doLogin() error:', data.message);
+				console.error('LoginUserComponent.doLogin() subscribe ale brak tokena:', data);
 			}
 		}, error => {
-			console.error('LoginComponent.doLogin() error:', error);
+			this.processing = false;
+			console.error('LoginUserComponent.doLogin() error:', error);
 		});
 	}
 }

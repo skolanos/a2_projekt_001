@@ -6,11 +6,13 @@ import { HttpModule }    from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AuthenticationService } from './services/authentication.service';
+import { ItemsService }          from './services/items.service';
 
-import { AppComponent }   from './app.component';
-import { MainComponent}   from './components/main.component';
-import { LoginComponent } from './components/login.component';
+import { AppComponent }          from './app.component';
+import { NavbarComponent }       from './components/navbar.component';
+import { LoginUserComponent }    from './components/login-user.component';
 import { RegisterUserComponent } from './components/register-user.component';
+import { ItemsListComponent}     from './components/items-list.component';
 
 @NgModule({
 	imports: [
@@ -21,12 +23,14 @@ import { RegisterUserComponent } from './components/register-user.component';
 	],
 	declarations: [
 		AppComponent,
-		MainComponent,
-		LoginComponent,
-		RegisterUserComponent
+		NavbarComponent,
+		LoginUserComponent,
+		RegisterUserComponent,
+		ItemsListComponent
 	],
 	providers: [
-		AuthenticationService
+		AuthenticationService,
+		ItemsService
 	],
 	bootstrap: [
 		AppComponent

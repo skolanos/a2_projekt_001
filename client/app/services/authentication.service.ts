@@ -10,12 +10,9 @@ export class AuthenticationService {
 	userToken: string;
 
 	constructor(private http: Http) {
-		console.log('AuthenticationService.constructor()');
 		this.userToken = '';
 	}
-	register(firstName: string, surname: string, email: string, password: string) {
-		console.log('AuthenticationService.register()');
-
+	register(firstName: string, surname: string, email: string, password: string): Observable<any> {
 		return this.http.post('/api/user-register', JSON.stringify({
 			firstName: firstName,
 			surname: surname,
@@ -26,8 +23,6 @@ export class AuthenticationService {
 		}).map((response: Response) => response.json());
 	}
 	login(email: string, password: string): Observable<any> {
-		console.log('AuthenticationService.login()');
-
 		var observable: Observable<any>  = this.http.post('/api/user-login', JSON.stringify({
 			email: email,
 			password: password
