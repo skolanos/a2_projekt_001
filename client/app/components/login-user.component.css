@@ -1,0 +1,15 @@
+/* element z informacją o błędzie */
+#popover-login-error {
+	position: absolute;
+	left: auto;
+	right: 300px;
+	top: 48px;
+}
+#popover-login-error > h3.popover-title {
+	background-color: #f2dede;
+	border-color: #ebcccc;
+	color: #a94442;
+}
+#popover-login-error.popover.popover-bottom:after {
+  border-bottom-color: #f2dede;
+}

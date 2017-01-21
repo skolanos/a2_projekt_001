@@ -1,11 +1,17 @@
 <form name="form" class="form-inline my-2 my-lg-0" (ngSubmit)="doLogin()" *ngIf="authenticationService.getUserToken() === ''">
-	<label>Adres e-mail</label>
-	<input type="text" name="login" [(ngModel)]="login" class="form-control mr-sm-2" placeholder="Adres e-mail">
-	<label>Hasło</label>
-	<input type="password" name="password" [(ngModel)]="password" class="form-control mr-sm-2" placeholder="Hasło">
-	<button type="submit" class="btn btn-primary my-2 my-sm-0" [disabled]="processiong">Zaloguj się</button>
-	<a class="nav-link" href="#">Nie pamiętasz hasła?</a>
+		<label>Adres e-mail</label>
+		<input type="text" name="login" [(ngModel)]="login" class="form-control mr-sm-2" placeholder="Adres e-mail">
+		<label>Hasło</label>
+		<input type="password" name="password" [(ngModel)]="password" class="form-control mr-sm-2" placeholder="Hasło">
+		<button type="submit" class="btn btn-primary my-2 my-sm-0" [disabled]="processiong">Zaloguj się</button>
+		<a class="nav-link" href="#">Nie pamiętasz hasła?</a>
 </form>
 <form name="form" class="form-inline my-2 my-lg-0" *ngIf="authenticationService.getUserToken() !== ''">
 	<a class="nav-link" href="#">Wyloguj się</a>
 </form>
+<div id="popover-login-error" class="popover popover-bottom" *ngIf="messages.length > 0">
+	<h3 class="popover-title">Informacje</h3>
+	<div class="popover-content alert-danger">
+		<p *ngFor="let message of messages">{{message}}</p>
+	</div>
+</div>

@@ -52,4 +52,18 @@ export class ItemsListComponent  implements OnInit {
 			console.log('ItemsListComponent.getItemsList() error:', error);
 		});
 	}
+	getPrevPage(): void {
+		console.log('ItemsListComponent.getPrevPage()');
+		if ((this.dataOffset - this.dataLimit) >= 0) {
+			this.dataOffset -= this.dataLimit;
+
+			this.getItemsList();
+		}
+	}
+	getNextPage(): void {
+		console.log('ItemsListComponent.getNextPage()');
+		this.dataOffset += this.dataLimit;
+
+		this.getItemsList();
+	}
 }

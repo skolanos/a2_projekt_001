@@ -14,7 +14,7 @@ const app = express();
 
 const port = serverConfig.httpServer.port;
 
-app.use(morgan('short'));
+app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

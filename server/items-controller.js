@@ -11,7 +11,7 @@ module.exports.itemsList = (req, res) => {
 	offset = parseInt(req.body.dataOffset, 10);
 	limit = 20;
 	if ((parseInt(req.body.dataLimit, 10) >= 5) && (parseInt(req.body.dataLimit, 10) <= 100)) {
-		offset = parseInt(req.body.dataLimit, 10);
+		limit = parseInt(req.body.dataLimit, 10);
 	}
 
 	dataModel.Items.findAll(offset, limit, (err, results) => {

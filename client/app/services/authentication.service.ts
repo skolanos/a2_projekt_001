@@ -23,20 +23,15 @@ export class AuthenticationService {
 		}).map((response: Response) => response.json());
 	}
 	login(email: string, password: string): Observable<any> {
-		var observable: Observable<any>  = this.http.post('/api/user-login', JSON.stringify({
+		return this.http.post('/api/user-login', JSON.stringify({
 			email: email,
 			password: password
 		}), {
 			headers: new Headers({ 'Content-Type': 'application/json' })
 		}).map((response: Response) => response.json());
-
-		observable.subscribe(data => {
-			if (data.status === 200) {
-				this.userToken = data.data[0].token;
-			}
-		}, error => {});
-
-		return observable;
+	}
+	setUserToken(userToken: string): void {
+		this.userToken = userToken;
 	}
 	getUserToken(): string {
 		return this.userToken;

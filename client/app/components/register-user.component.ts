@@ -60,14 +60,17 @@ export class RegisterUserComponent {
 				if (data.status === 200) {
 					this.authenticationService.login(this.email, this.password).subscribe(data => {
 						console.log('RegisterUserComponent.doRegister().login():', data);
-						if (this.authenticationService.getUserToken() !== '') {
+						if (data.status === 200) {
+							this.authenticationService.setUserToken(data.data[0].token);
 							this.router.navigate(['/items-list']);
 						}
 						else {
 							console.error('RegisterUserComponent.doRegister().login() subscribe ale brak tokena:', data);
+							this.messages.push(data.message);
 						}
 					}, error => {
 						console.error('RegisterUserComponent.doRegister().login() error:', error);
+						this.messages.push(error);
 					});
 				}
 				else {

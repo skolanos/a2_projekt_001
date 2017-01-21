@@ -6,12 +6,14 @@ import { AuthenticationService } from '../services/authentication.service';
 @Component({
 	moduleId: module.id,
 	selector: 'login-user-component',
-	templateUrl: 'login-user.component.html'
+	templateUrl: 'login-user.component.html',
+	styleUrls: ['login-user.component.css']
 })
 export class LoginUserComponent {
 	login: string;
 	password: string;
 	processing: boolean;
+	messages: string[];
 
 	constructor(
 		private authenticationService: AuthenticationService,
@@ -20,22 +22,39 @@ export class LoginUserComponent {
 		this.processing = false;
 		this.login = '';
 		this.password = '';
+		this.messages = [];
+	}
+	checkForm(): boolean {
+		var res: boolean = true;
+
+		this.messages = [];
+		if (this.login === '') {
+			res = false;
+			this.messages.push('Proszę wprowadzić wartość do pola "Adres e-mail".');
+		}
+		if (this.password === '') {
+			res = false;
+			this.messages.push('Proszę wprowadzić wartość do pola "Hasło".');
+		}
+
+		return res;
 	}
 	doLogin(): void {
-		console.log('LoginUserComponent.doLogin() start: ', this.login, this.password);
-		this.processing = true;
-		this.authenticationService.login(this.login, this.password).subscribe(data => {
-			this.processing = false;
-			console.log('LoginUserComponent.doLogin() subscribe:', data);
-			if (this.authenticationService.getUserToken() !== '') {
-				this.router.navigate(['/items-list']);
-			}
-			else {
-				console.error('LoginUserComponent.doLogin() subscribe ale brak tokena:', data);
-			}
-		}, error => {
-			this.processing = false;
-			console.error('LoginUserComponent.doLogin() error:', error);
-		});
+		if (this.checkForm()) {
+			this.processing = true;
+			this.authenticationService.login(this.login, this.password).subscribe(data => {
+				this.processing = false;
+				if (data.status === 200) {
+					this.authenticationService.setUserToken(data.data[0].token);
+					this.router.navigate(['/items-list']);
+				}
+				else {
+					this.messages.push(data.message);
+				}
+			}, error => {
+				this.processing = false;
+				this.messages.push(error);
+			});
+		}
 	}
 }
