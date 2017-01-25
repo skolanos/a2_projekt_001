@@ -5,6 +5,25 @@ const dataModel = require('./data-model');
 
 const authenticatedUsers = [];
 
+module.exports.authenticateRequest = (req, callback) => {
+	console.log('authenticate-request()\t', JSON.stringify(req.body));
+
+	var token = req.headers['x-accss-token'] || req.body.token || req.query.token;
+
+	if (token) {
+		jwt.verify(token, serverConfig.jsonwebtoken.secret, (err, decoded) => {
+			if (err) {
+				callback(err, undefined);
+			}
+			else {
+				callback(undefined, decoded);
+			}
+		});
+	}
+	else {
+		callback({status: 403, message: 'Nie zainicjowano sesji.'}, undefined);
+	}
+};
 module.exports.register = (req, res) => {
 	console.log('POST\t/api/user-register\t', JSON.stringify(req.body));
 
@@ -69,24 +88,4 @@ module.exports.login = (req, res) => {
 			}
 		});
 //	}
-};
-module.exports.authenticateRequest = (req, res) => {
-	console.log('POST\t/api/authenticate-request\t', JSON.stringify(req.body));
-
-	var token = req.headers['x-accss-token'] || req.body.token || req.query.token;
-
-	if (token) {
-		jwt.verify(token, serverConfig.jsonwebtoken.secret, (err, decoded) => {
-			if (err) {
-				res.json({ status: 400, message: 'Nieprawidłowa identyfikacja sesji.', obj: [] });
-			}
-			else {
-				req.decoded = decoded;
-				res.json({ status: 200, message: 'Poprawna identyfikacja sesji.', data: [] });
-			}
-		});
-	}
-	else {
-		res.json({ status: 403, message: 'Nie zainicjowano sesji.', obj: [] });
-	}
 };

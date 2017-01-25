@@ -14,8 +14,10 @@ export class ItemsListComponent implements OnInit {
 	messages: string[];
 	rowsCount: number;
 	currentPage: number;
+	lastPage: number;
 	dataOffset: number;
-	pageSize: number;
+	dataLimit: number;
+	pageSize: string;
 	pageSizeItems: any[];
 	pagesItems: any[];
 	items: any[];
@@ -34,8 +36,10 @@ export class ItemsListComponent implements OnInit {
 		this.pagesItems = [];
 		this.rowsCount = 0;
 		this.currentPage = 0;
+		this.lastPage = 0;
 		this.dataOffset = 0;
-		this.pageSize = 10;
+		this.dataLimit = 10;
+		this.pageSize = this.dataLimit.toString();
 		this.items = [];
 		this.messages = [];
 	}
@@ -45,35 +49,39 @@ export class ItemsListComponent implements OnInit {
 	private mapDataRows(rows: any[]): void {
 		var i: number = 0;
 
-		// przepisanie danych do tablicy obiektów na których dziala komponent (mają inną strukturę niż obiekty z serwera)
-		this.items = [];
-		for (i = 0; i < rows.length; i += 1) {
-			this.items.push({
-				id: rows[i].id,
-				name: rows[i].nazwa,
-				link: rows[i].link,
-				categoryId: rows[i].kat_id,
-				category: rows[i].kat_nazwa
+		// przepisanie danych do tablicy obiektów na których dziala komponent
+		// (mają inną strukturę niż obiekty z serwera)
+		if (rows.length > 0) {
+			this.items = rows.map(element => {
+				return {
+					id: element.id,
+					name: element.nazwa,
+					link: element.link,
+					categoryId: element.kat_id,
+					category: element.kat_nazwa
+				};
 			});
+		}
+		else {
+			this.items = [];
 		}
 	}
 	private calculatePagesItems(): void {
 		var i: number,
-		lastPageNo: number,
 		maxElementsCount: number,
+		halfElementsCount: number,
 		firstPage: number;
 
 		// maksymalna liczba elementów w nawigatorze
 		maxElementsCount = 10;
-		// numer ostatniej strony
-		lastPageNo = Math.ceil(this.rowsCount / this.pageSize);
+		halfElementsCount = Math.ceil(maxElementsCount / 2);
 
 		this.pagesItems = [];
 		// strony na lewo od oktualnej strony
-		for (i = this.currentPage - 5; i < this.currentPage; i += 1) {
+		for (i = this.currentPage - halfElementsCount; i < this.currentPage; i += 1) {
 			if (i >= 0) {
 				this.pagesItems.push({
-					offset: i * this.pageSize,
+					offset: i * this.dataLimit,
 					pageNo: i,
 					caption: i + 1
 				});
@@ -82,29 +90,32 @@ export class ItemsListComponent implements OnInit {
 		// aktualna strona
 		i = this.currentPage;
 		this.pagesItems.push({
-			offset: i * this.pageSize,
+			offset: i * this.dataLimit,
 			pageNo: i,
-			caption: '#' + (i + 1) + '#'
+			caption: i + 1
 		});
-		// strony na prawo od aktualnej strony (jeżeli jest taka możliwość to dopelnienie do 10-ciu elementów)
+		// strony na prawo od aktualnej strony (jeżeli jest taka możliwość
+		// to dopełnienie do 10-ciu elementów)
 		for (i = this.currentPage + 1; i < this.currentPage + maxElementsCount; i += 1) {
-			if ((i < lastPageNo) && (this.pagesItems.length < maxElementsCount)) {
+			if ((i < this.lastPage) && (this.pagesItems.length < maxElementsCount)) {
 				this.pagesItems.push({
-					offset: i * this.pageSize,
+					offset: i * this.dataLimit,
 					pageNo: i,
 					caption: i + 1
 				});
 			}
 		}
 
-		// jeżeli jesteśmy pod koniec dostępnych paczek to może się zdarzyć że nie udalo się dopelnić do 10 z prawej strony więc staramy się dopelnić z lewej
+		// jeżeli jesteśmy pod koniec dostępnych paczek to może się zdarzyć,
+		//  że nie udalo się dopełnić do 10 z prawej strony więc staramy się
+		// dopełnić z lewej
 		if (this.pagesItems.length < maxElementsCount) {
 			firstPage = this.pagesItems[0].pageNo;
 			if (firstPage > 0) {
 				for (i = firstPage - 1; i > firstPage - maxElementsCount; i -= 1) {
 					if ((i >= 0) && (this.pagesItems.length < maxElementsCount)) {
 						this.pagesItems.unshift({
-							offset: i * this.pageSize,
+							offset: i * this.dataLimit,
 							pageNo: i,
 							caption: i + 1
 						});
@@ -116,33 +127,42 @@ export class ItemsListComponent implements OnInit {
 	getItemsList(): void {
 		console.log('ItemsListComponent.getItemsList()');
 		this.processing = true;
-		this.itemsService.getList(this.dataOffset, this.pageSize).subscribe(data => {
+		this.itemsService.getList(this.dataOffset, this.dataLimit).subscribe(data => {
 			//console.log('ItemsListComponent.getItemsList() subscribe:', data);
 			this.processing = false;
-			this.rowsCount = data.data.rowsCount;
-			this.mapDataRows(data.data.rows);
-			this.calculatePagesItems();
+			if (data.status === 200) {
+				this.rowsCount = data.data.rowsCount;
+				this.lastPage = Math.ceil(this.rowsCount / this.dataLimit);
+				this.mapDataRows(data.data.rows);
+				this.calculatePagesItems();
+			}
+			else {
+				this.messages.push(data.message);
+			}
 		}, error => {
 			this.processing = false;
-			//console.log('ItemsListComponent.getItemsList() error:', error);
+			console.log('ItemsListComponent.getItemsList() error:', error);
+			this.messages.push(error);
 		});
 	}
 	pageSizeChange(): void {
+		this.dataOffset = 0;
 		this.currentPage = 0;
+		this.dataLimit = parseInt(this.pageSize, 10);
 
 		this.getItemsList();
 	}
 	getPrevPage(): void {
-		if ((this.dataOffset - this.pageSize) >= 0) {
-			this.dataOffset -= this.pageSize;
+		if ((this.dataOffset - this.dataLimit) >= 0) {
+			this.dataOffset -= this.dataLimit;
 			this.currentPage -= 1;
 
 			this.getItemsList();
 		}
 	}
 	getNextPage(): void {
-		if ((this.dataOffset + this.pageSize) < this.rowsCount) {
-			this.dataOffset += this.pageSize;
+		if ((this.dataOffset + this.dataLimit) < this.rowsCount) {
+			this.dataOffset += this.dataLimit;
 			this.currentPage += 1;
 
 			this.getItemsList();
