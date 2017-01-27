@@ -13,6 +13,7 @@ import { NavbarComponent }       from './components/navbar.component';
 import { LoginUserComponent }    from './components/login-user.component';
 import { RegisterUserComponent } from './components/register-user.component';
 import { ItemsListComponent}     from './components/items-list.component';
+import { PricesComponent }       from './components/prices-component';
 
 @NgModule({
 	imports: [
@@ -26,7 +27,8 @@ import { ItemsListComponent}     from './components/items-list.component';
 		NavbarComponent,
 		LoginUserComponent,
 		RegisterUserComponent,
-		ItemsListComponent
+		ItemsListComponent,
+		PricesComponent
 	],
 	providers: [
 		AuthenticationService,

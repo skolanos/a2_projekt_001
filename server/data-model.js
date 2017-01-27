@@ -46,7 +46,7 @@ module.exports.Users = {
 
 					done();
 					res = [];
-					for (i = 0; i < results.length; i += 1) {
+					for (let i = 0; i < results.length; i += 1) {
 						if (bcrypt.compareSync(password, results[i].uz_haslo)) {
 							res.push(results[i]);
 						}

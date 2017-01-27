@@ -8,6 +8,7 @@ import { AuthenticationService } from '../services/authentication.service';
 	templateUrl: 'navbar.component.html'
 })
 export class NavbarComponent {
-	constructor(private authenticationService: AuthenticationService) {
-	}
+	constructor(
+		private authenticationService: AuthenticationService
+	) {}
 }

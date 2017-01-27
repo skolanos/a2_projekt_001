@@ -1,0 +1,13 @@
+<div class="container" style="border: 1px solid red;">
+	<h1>TODO: prezentacja cen i określenie ilości</h1>
+	<div *ngIf="item">
+		id: {{item.id}}<br>
+		name: {{item.name}}<br>
+		link: {{item.link}}<br>
+		categoryId: {{item.categoryId}}<br>
+		category: {{item.category}}<br>
+	</div>
+	<div *ngIf="!item">
+		Nie wybrano pozycji z listy...
+	</div>
+</div>

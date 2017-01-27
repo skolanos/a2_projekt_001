@@ -1,7 +1,6 @@
 const path = require('path');
 
 module.exports = {
-	// serwer www
 	httpServer: {
 		port: process.env.PORT || 3000,
 		wwwRoot: path.join(__dirname, '../client')

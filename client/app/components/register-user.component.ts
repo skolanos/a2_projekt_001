@@ -54,11 +54,11 @@ export class RegisterUserComponent {
 		console.log('RegisterUserComponent.doRegister() start:');
 		if (this.checkForm()) {
 			this.processiong = true;
-			this.authenticationService.register(this.firstName, this.surname, this.email, this.password).subscribe(data => {
+			this.authenticationService.register(this.firstName, this.surname, this.email, this.password).subscribe((data: any) => {
 				this.processiong = false;
 				console.log('RegisterUserComponent.doRegister() subscribe:', data);
 				if (data.status === 200) {
-					this.authenticationService.login(this.email, this.password).subscribe(data => {
+					this.authenticationService.login(this.email, this.password).subscribe((data: any) => {
 						console.log('RegisterUserComponent.doRegister().login():', data);
 						if (data.status === 200) {
 							this.authenticationService.setUserToken(data.data[0].token);

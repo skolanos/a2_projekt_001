@@ -6,6 +6,7 @@
 			<li *ngFor="let message of messages">{{message}}</li>
 		</ul>
 	</div>
+	<prices-component [item]="selectedItem"></prices-component>
 	<div>
 		<select name="pageSize" [(ngModel)]="pageSize" size="1" (change)="pageSizeChange()">
 			<option *ngFor="let pageSizeItem of pageSizeItems" value="{{pageSizeItem.value}}">{{pageSizeItem.caption}}</option>
@@ -21,7 +22,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr *ngFor="let item of items">
+			<tr *ngFor="let item of items" [class.table-info]="selectedItem && item.id === selectedItem.id" (click)="selectItemClick(item)">
 				<td>{{item.category}}</td>
 				<td>{{item.name}}</td>
 				<td>{{item.link}}</td>

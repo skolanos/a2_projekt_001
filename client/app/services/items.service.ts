@@ -12,8 +12,7 @@ export class ItemsService {
 	constructor(
 		private http: Http,
 		private authenticationService: AuthenticationService
-	) {
-	}
+	) {}
 	getList(dataOffset: number, dataLimit: number): Observable<any> {
 		return this.http.post('/api/items-list', JSON.stringify({
 			dataOffset: dataOffset,

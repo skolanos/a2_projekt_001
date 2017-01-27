@@ -42,7 +42,7 @@ export class LoginUserComponent {
 	doLogin(): void {
 		if (this.checkForm()) {
 			this.processing = true;
-			this.authenticationService.login(this.login, this.password).subscribe(data => {
+			this.authenticationService.login(this.login, this.password).subscribe((data: any) => {
 				this.processing = false;
 				if (data.status === 200) {
 					this.authenticationService.setUserToken(data.data[0].token);

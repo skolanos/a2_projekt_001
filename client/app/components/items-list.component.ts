@@ -1,8 +1,20 @@
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 
+import { Item } from '../types/item.type';
+
 import { AuthenticationService } from '../services/authentication.service';
 import { ItemsService } from '../services/items.service';
+
+interface PageSizeItem {
+	value: number;
+	caption: string;
+}
+interface PageItem {
+	offset: number;
+	pageNo: number;
+	caption: string;
+}
 
 @Component({
 	moduleId: module.id,
@@ -18,9 +30,10 @@ export class ItemsListComponent implements OnInit {
 	dataOffset: number;
 	dataLimit: number;
 	pageSize: string;
-	pageSizeItems: any[];
-	pagesItems: any[];
-	items: any[];
+	pageSizeItems: PageSizeItem[];
+	pagesItems: PageItem[];
+	items: Item[];
+	selectedItem: Item;
 
 	constructor(
 		private authenticationService: AuthenticationService,
@@ -41,18 +54,17 @@ export class ItemsListComponent implements OnInit {
 		this.dataLimit = 10;
 		this.pageSize = this.dataLimit.toString();
 		this.items = [];
+		this.selectedItem = undefined;
 		this.messages = [];
 	}
 	ngOnInit(): void {
 		this.getItemsList();
 	}
 	private mapDataRows(rows: any[]): void {
-		var i: number = 0;
-
 		// przepisanie danych do tablicy obiektów na których dziala komponent
 		// (mają inną strukturę niż obiekty z serwera)
 		if (rows.length > 0) {
-			this.items = rows.map(element => {
+			this.items = rows.map((element: any) => {
 				return {
 					id: element.id,
 					name: element.nazwa,
@@ -67,10 +79,10 @@ export class ItemsListComponent implements OnInit {
 		}
 	}
 	private calculatePagesItems(): void {
-		var i: number,
-		maxElementsCount: number,
-		halfElementsCount: number,
-		firstPage: number;
+		var maxElementsCount: number,
+			halfElementsCount: number,
+			firstPage: number,
+			i: number;
 
 		// maksymalna liczba elementów w nawigatorze
 		maxElementsCount = 10;
@@ -83,7 +95,7 @@ export class ItemsListComponent implements OnInit {
 				this.pagesItems.push({
 					offset: i * this.dataLimit,
 					pageNo: i,
-					caption: i + 1
+					caption: String(i + 1)
 				});
 			}
 		}
@@ -92,7 +104,7 @@ export class ItemsListComponent implements OnInit {
 		this.pagesItems.push({
 			offset: i * this.dataLimit,
 			pageNo: i,
-			caption: i + 1
+			caption: String(i + 1)
 		});
 		// strony na prawo od aktualnej strony (jeżeli jest taka możliwość
 		// to dopełnienie do 10-ciu elementów)
@@ -101,7 +113,7 @@ export class ItemsListComponent implements OnInit {
 				this.pagesItems.push({
 					offset: i * this.dataLimit,
 					pageNo: i,
-					caption: i + 1
+					caption: String(i + 1)
 				});
 			}
 		}
@@ -117,7 +129,7 @@ export class ItemsListComponent implements OnInit {
 						this.pagesItems.unshift({
 							offset: i * this.dataLimit,
 							pageNo: i,
-							caption: i + 1
+							caption: String(i + 1)
 						});
 					}
 				}
@@ -173,5 +185,8 @@ export class ItemsListComponent implements OnInit {
 		this.currentPage = pageItem.pageNo;
 
 		this.getItemsList();
+	}
+	selectItemClick(item: Item): void {
+		this.selectedItem = item;
 	}
 }

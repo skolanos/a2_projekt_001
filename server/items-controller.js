@@ -3,12 +3,13 @@ const dataModel = require('./data-model');
 const authenticationController = require('./authentication-controller');
 
 module.exports.itemsList = (req, res) => {
-	var offset = 0,
-		limit = 0,
-		data = {};
 	console.log('POST\t/api/items-list\t', 'token:' + req.headers['x-accss-token'], JSON.stringify(req.body));
 
 	authenticationController.authenticateRequest(req, (err, decoded) => {
+		var offset = 0,
+			limit = 0,
+			data = {};
+
 		if (err) {
 			console.log('TODO: Token był nieprawidłowy więc odesłać ładną informację o błędzie');
 			res.json({ status: 400, message: 'Nieprawidłowa weryfikacja użytkownika.', data: [] });
