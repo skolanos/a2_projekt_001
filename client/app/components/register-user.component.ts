@@ -65,11 +65,11 @@ export class RegisterUserComponent {
 							this.router.navigate(['/items-list']);
 						}
 						else {
-							console.error('RegisterUserComponent.doRegister().login() subscribe ale brak tokena:', data);
+							console.log('RegisterUserComponent.doRegister().login() subscribe ale brak tokena:', data);
 							this.messages.push(data.message);
 						}
 					}, error => {
-						console.error('RegisterUserComponent.doRegister().login() error:', error);
+						console.log('RegisterUserComponent.doRegister().login() error:', error);
 						this.messages.push(error);
 					});
 				}
@@ -78,7 +78,7 @@ export class RegisterUserComponent {
 				}
 			}, error => {
 				this.processiong = false;
-				console.error('RegisterUserComponent.doRegister() error:', error);
+				console.log('RegisterUserComponent.doRegister() error:', error);
 				this.messages.push(error);
 			});
 		}

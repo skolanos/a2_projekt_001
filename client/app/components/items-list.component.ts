@@ -137,10 +137,8 @@ export class ItemsListComponent implements OnInit {
 		}
 	}
 	getItemsList(): void {
-		console.log('ItemsListComponent.getItemsList()');
 		this.processing = true;
 		this.itemsService.getList(this.dataOffset, this.dataLimit).subscribe(data => {
-			//console.log('ItemsListComponent.getItemsList() subscribe:', data);
 			this.processing = false;
 			if (data.status === 200) {
 				this.rowsCount = data.data.rowsCount;

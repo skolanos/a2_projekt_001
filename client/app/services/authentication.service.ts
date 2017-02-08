@@ -12,7 +12,7 @@ export class AuthenticationService {
 	constructor(private http: Http) {
 		this.userToken = '';
 	}
-	register(firstName: string, surname: string, email: string, password: string): Observable<any> {
+	register(firstName: string, surname: string, email: string, password: string): Observable<Response> {
 		return this.http.post('/api/user-register', JSON.stringify({
 			firstName: firstName,
 			surname: surname,
@@ -22,12 +22,21 @@ export class AuthenticationService {
 			headers: new Headers({ 'Content-Type': 'application/json' })
 		}).map((response: Response) => response.json());
 	}
-	login(email: string, password: string): Observable<any> {
+	login(email: string, password: string): Observable<Response> {
 		return this.http.post('/api/user-login', JSON.stringify({
 			email: email,
 			password: password
 		}), {
 			headers: new Headers({ 'Content-Type': 'application/json' })
+		}).map((response: Response) => response.json());
+	}
+	logout(): Observable<Response> {
+		return this.http.post('/api/user-logout', JSON.stringify({
+		}), {
+			headers: new Headers({
+				'Content-Type': 'application/json',
+				'x-accss-token': this.getUserToken()
+			})
 		}).map((response: Response) => response.json());
 	}
 	setUserToken(userToken: string): void {

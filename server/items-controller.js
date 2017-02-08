@@ -3,42 +3,43 @@ const dataModel = require('./data-model');
 const authenticationController = require('./authentication-controller');
 
 module.exports.itemsList = (req, res) => {
-	console.log('POST\t/api/items-list\t', 'token:' + req.headers['x-accss-token'], JSON.stringify(req.body));
+	var offset = 0,
+		limit = 0,
+		data = {};
 
-	authenticationController.authenticateRequest(req, (err, decoded) => {
-		var offset = 0,
-			limit = 0,
-			data = {};
+	offset = parseInt(req.body.dataOffset, 10);
+	limit = 20;
+	if ((parseInt(req.body.dataLimit, 10) >= 5) && (parseInt(req.body.dataLimit, 10) <= 100)) {
+		limit = parseInt(req.body.dataLimit, 10);
+	}
 
+	data = {};
+	dataModel.Items.getRowsCount((err, results) => {
 		if (err) {
-			console.log('TODO: Token był nieprawidłowy więc odesłać ładną informację o błędzie');
-			res.json({ status: 400, message: 'Nieprawidłowa weryfikacja użytkownika.', data: [] });
+			res.json({ status: 400, message: err, data: [] });
 		}
 		else {
-			offset = parseInt(req.body.dataOffset, 10);
-			limit = 20;
-			if ((parseInt(req.body.dataLimit, 10) >= 5) && (parseInt(req.body.dataLimit, 10) <= 100)) {
-				limit = parseInt(req.body.dataLimit, 10);
-			}
-
-			data = {};
-			dataModel.Items.getRowsCount((err, results) => {
+			data.rowsCount = results[0].rows_count;
+			dataModel.Items.findAll(offset, limit, (err, results) => {
 				if (err) {
 					res.json({ status: 400, message: err, data: [] });
 				}
 				else {
-					data.rowsCount = results[0].rows_count;
-					dataModel.Items.findAll(offset, limit, (err, results) => {
-						if (err) {
-							res.json({ status: 400, message: err, data: [] });
-						}
-						else {
-							data.rows = results;
-							res.json({ status: 200, message: '', data: data });
-						}
-					});
+					data.rows = results;
+					res.json({ status: 200, message: '', data: data });
 				}
 			});
+		}
+	});
+};
+module.exports.itemPrices = (req, res) => {
+	// TODO: sprawdzenie czy itemId jest poprawną liczbą całkowitą
+	dataModel.Prices.findByItemId(req.body.itemId, (err, results) => {
+		if (err) {
+			res.json({ status: 400, message: err, data: [] });
+		}
+		else {
+			res.json({ status: 200, message: '', data: results });
 		}
 	});
 };

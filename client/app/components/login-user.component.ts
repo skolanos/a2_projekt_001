@@ -39,22 +39,41 @@ export class LoginUserComponent {
 
 		return res;
 	}
+	rememberPassword(): void {
+		alert('TODO: wysłanie e-maila ze zresetowanym hasłem'); // TODO:
+	}
 	doLogin(): void {
 		if (this.checkForm()) {
 			this.processing = true;
-			this.authenticationService.login(this.login, this.password).subscribe((data: any) => {
+			this.authenticationService.login(this.login, this.password).subscribe((value: any) => {
 				this.processing = false;
-				if (data.status === 200) {
-					this.authenticationService.setUserToken(data.data[0].token);
+				if (value.status === 200) {
+					this.authenticationService.setUserToken(value.data[0].token);
 					this.router.navigate(['/items-list']);
 				}
 				else {
-					this.messages.push(data.message);
+					this.messages.push(value.message);
 				}
-			}, error => {
+			}, (error: any) => {
 				this.processing = false;
 				this.messages.push(error);
 			});
 		}
+	}
+	doLogout(): void {
+		this.processing = true;
+		this.authenticationService.logout().subscribe((value: any) => {
+			this.processing = false;
+			if (value.status === 200) {
+				this.authenticationService.setUserToken('');
+				this.router.navigate(['/register']);
+			}
+			else {
+				this.messages.push(value.message);
+			}
+		}, (error: any) => {
+			this.processing = false;
+			this.messages.push(error);
+		});
 	}
 }

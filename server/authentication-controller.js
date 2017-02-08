@@ -3,30 +3,27 @@ const jwt = require('jsonwebtoken');
 const serverConfig = require('./server-config');
 const dataModel = require('./data-model');
 
-const authenticatedUsers = [];
+/*const authenticatedUsers = [];*/
 
-module.exports.authenticateRequest = (req, callback) => {
-	console.log('authenticate-request()\t', JSON.stringify(req.body));
-
+module.exports.authenticateRequest = (req, res, next) => {
 	var token = req.headers['x-accss-token'] || req.body.token || req.query.token;
 
 	if (token) {
 		jwt.verify(token, serverConfig.jsonwebtoken.secret, (err, decoded) => {
 			if (err) {
-				callback(err, undefined);
+				return res.json({ status: 400, message: 'Nieprawidłowa weryfikacja żądania', data: [] });
 			}
 			else {
-				callback(undefined, decoded);
+				req.decoded = decoded;
+				next();
 			}
 		});
 	}
 	else {
-		callback({status: 403, message: 'Nie zainicjowano sesji.'}, undefined);
+		return res.status(403).json({ status: 403, message: 'Nie można przeprowadzić weryfikacji żadania', data: [] });
 	}
 };
 module.exports.register = (req, res) => {
-	console.log('POST\t/api/user-register\t', JSON.stringify(req.body));
-
 	dataModel.Users.findByEmail(req.body.email, (err, results) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
@@ -61,25 +58,30 @@ module.exports.register = (req, res) => {
 	});
 };
 module.exports.login = (req, res) => {
-	var token = '';
+	function validateParams(req) {
+		var res = true;
 
-	console.log('POST\t/api/user-login\t', JSON.stringify(req.body));
+		if (req.body.email === '') {
+			res = false;
+		}
+		if (req.body.password === '') {
+			res = false;
+		}
+		return res;
+	}
 
-//	if (validateParamsLogin()) {
-//		// TODO:
-//	}
-//	else {
+	if (validateParams(req)) {
 		dataModel.Users.findByEmailPassword(req.body.email, req.body.password, (err, results) => {
 			if (err) {
 				res.json({ status: 400, message: err, data: [] });
 			}
 			else {
 				if (results.length === 1) {
-					token = jwt.sign(results[0], serverConfig.jsonwebtoken.secret, { expiresIn: 60 * 24 });
-					authenticatedUsers.push({
+					let token = jwt.sign(results[0], serverConfig.jsonwebtoken.secret, { expiresIn: 60 * 24 });
+					/*authenticatedUsers.push({
 						user: results[0],
 						token: token
-					});
+					});*/
 					res.json({ status: 200, message: '', data: [{ token: token }] });
 				}
 				else {
@@ -87,5 +89,11 @@ module.exports.login = (req, res) => {
 				}
 			}
 		});
-//	}
+	}
+	else {
+		res.json({ status: 400, message: 'Nieprawidłowy adres e-mail albo hasło użytkownika.', obj: [] });
+	}
+};
+module.exports.logout = (req, res) => {
+
 };

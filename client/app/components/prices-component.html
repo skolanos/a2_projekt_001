@@ -1,13 +1,24 @@
-<div class="container" style="border: 1px solid red;">
-	<h1>TODO: prezentacja cen i określenie ilości</h1>
-	<div *ngIf="item">
-		id: {{item.id}}<br>
-		name: {{item.name}}<br>
-		link: {{item.link}}<br>
-		categoryId: {{item.categoryId}}<br>
-		category: {{item.category}}<br>
+<div class="container" style="border: 1px solid red">
+	<h2 *ngIf="item">Wybrany towar: {{item.name}}</h2>
+	<div class="alert alert-danger" *ngIf="messages.length > 0">
+		<strong>Informacje:</strong><br>
+		<ul>
+			<li *ngFor="let message of messages">{{message}}</li>
+		</ul>
 	</div>
-	<div *ngIf="!item">
-		Nie wybrano pozycji z listy...
+	<div *ngIf="prices">
+		<form>
+			<div *ngFor="let price of prices">
+				<label>
+					<input type="radio" name="selectedPrice" [(ngModel)]="selectedPrice" [value]="price" (change)="priceClick(price)">
+					{{price.c_ilosc}} {{price.c_jednostka}} cena: {{price.c_cena}} PLN
+				</label>
+			</div>
+			<div *ngIf="selectedPrice">
+				<label for="amount">Ilość</label>
+				<input type="text" name="amount" [(ngModel)]="amount" class="form-control mr-sm-2" placeholder="Ilość" (change)="amountChange()" required>
+				Wartość: {{value}} PLN
+			</div>
+		</form>
 	</div>
 </div>

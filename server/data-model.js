@@ -166,3 +166,27 @@ module.exports.Items = {
 		});
 	}
 };
+module.exports.Prices = {
+	findByItemId: (itemId, callback) => {
+		var results = [],
+			query = {};
+
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined);
+			}
+			else {
+				results = [];
+				query = client.query('SELECT * FROM ceny WHERE (c_t_id=$1) ORDER BY c_id', [itemId]);
+				query.on('row', (row) => {
+					results.push(row);
+				});
+				query.on('end', () => {
+					done();
+					callback(undefined, results);
+				})
+			}
+		});
+	}
+};
