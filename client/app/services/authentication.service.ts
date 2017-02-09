@@ -32,6 +32,7 @@ export class AuthenticationService {
 	}
 	logout(): Observable<Response> {
 		return this.http.post('/api/user-logout', JSON.stringify({
+			nodata: 'nodata'
 		}), {
 			headers: new Headers({
 				'Content-Type': 'application/json',

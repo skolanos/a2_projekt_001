@@ -28,7 +28,7 @@ export class RegisterUserComponent {
 		this.messages = [];
 	}
 	checkForm(): boolean {
-		var res: boolean = true;
+		let res: boolean = true;
 
 		this.messages = [];
 		if (this.firstName === '') {

@@ -39,7 +39,7 @@ export class LoginUserComponent {
 
 		return res;
 	}
-	rememberPassword(): void {
+	dontRememberPassword(): void {
 		alert('TODO: wysłanie e-maila ze zresetowanym hasłem'); // TODO:
 	}
 	doLogin(): void {
@@ -66,6 +66,7 @@ export class LoginUserComponent {
 			this.processing = false;
 			if (value.status === 200) {
 				this.authenticationService.setUserToken('');
+				this.password = '';
 				this.router.navigate(['/register']);
 			}
 			else {

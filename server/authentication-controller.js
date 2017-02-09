@@ -85,15 +85,15 @@ module.exports.login = (req, res) => {
 					res.json({ status: 200, message: '', data: [{ token: token }] });
 				}
 				else {
-					res.json({ status: 400, message: 'Nieprawidłowy adres e-mail albo hasło użytkownika.', obj: [] });
+					res.json({ status: 400, message: 'Nieprawidłowy adres e-mail albo hasło użytkownika.', data: [] });
 				}
 			}
 		});
 	}
 	else {
-		res.json({ status: 400, message: 'Nieprawidłowy adres e-mail albo hasło użytkownika.', obj: [] });
+		res.json({ status: 400, message: 'Nieprawidłowy adres e-mail albo hasło użytkownika.', data: [] });
 	}
 };
 module.exports.logout = (req, res) => {
-
+	res.json({ status: 200, message: '', data: [] });
 };

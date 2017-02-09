@@ -51,6 +51,32 @@ export class PricesComponent implements OnChanges {
 
 		return (res && (res.length > 0)) ? true: false;
 	}
+	/*
+	private currencyToString(value: number): string {
+		let res: string = '';
+		let valueStr: string = String(value);
+		let pos: number = 0;
+		let x: string = '';
+		let y: string = '';
+
+		pos = valueStr.indexOf('.');
+		if (pos >= 0) {
+			x = valueStr.substr(0, pos - 1);
+			y = valueStr.substr(pos + 1, valueStr.length);
+			for (let i = y.length; i < 2; i += 1) {
+				y = y + '0';
+			}
+		}
+		else {
+			x = valueStr;
+			y = '00';
+		}
+
+		res = x + ',' + y;
+
+		return res;
+	}
+	*/
 	private computeValue(): void {
 		let amountBD: any = new BigDecimal(this.amount);
 		let priceBD: any = new BigDecimal(this.selectedPrice.c_cena);
@@ -59,13 +85,37 @@ export class PricesComponent implements OnChanges {
 		this.value = Number(valueBD.toString());
 	}
 	priceClick(selectedPrice: any): void {
-		if (this.isValidInt(this.amount)) {
+		// nie ma gwarancji że this.amount jest typu string,
+		// jak do pola wprowadzi się liczbę to typ się zmienia
+		if (this.isValidInt(String(this.amount))) {
 			this.computeValue();
 		}
 	}
 	amountChange(): void {
-		if (this.isValidInt(this.amount)) {
+		// nie ma gwarancji że this.amount jest typu string,
+		// jak do pola wprowadzi się liczbę to typ się zmienia
+		if (this.isValidInt(String(this.amount))) {
 			this.computeValue();
+		}
+	}
+	checkForm(): boolean {
+		let res: boolean = true;
+
+		this.messages = [];
+		if (!this.selectedPrice) {
+			res = false;
+			this.messages.push('Proszę wybrać wariant cenowy.');
+		}
+		if (!((this.isValidInt(String(this.amount))) && (Number(this.amount) > 0))) {
+			res = false;
+			this.messages.push('Proszę wprowadzić prawidłową liczbę zamawianego towaru [1..].');
+		}
+
+		return res;
+	}
+	addToCart(): void {
+		if (this.checkForm()) {
+			console.log('Można umieścić towar w koszyku');
 		}
 	}
 }
