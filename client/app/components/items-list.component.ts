@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Item } from '../types/item.type';
 
@@ -79,10 +78,10 @@ export class ItemsListComponent implements OnInit {
 		}
 	}
 	private calculatePagesItems(): void {
-		var maxElementsCount: number,
-			halfElementsCount: number,
-			firstPage: number,
-			i: number;
+		let maxElementsCount: number;
+		let halfElementsCount: number;
+		let firstPage: number;
+		let i: number;
 
 		// maksymalna liczba elementów w nawigatorze
 		maxElementsCount = 10;

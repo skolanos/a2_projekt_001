@@ -43,3 +43,51 @@ module.exports.itemPrices = (req, res) => {
 		}
 	});
 };
+module.exports.itemAddToCart = (req, res) => {
+	// TODO: sprawdzenie czy priceId jest poprawną liczbą całkowitą
+	// TODO: sprawdzenie czy amount jest poprawną liczbą całkowitą
+	dataModel.Prices.findById(req.body.priceId, (err, results) => {
+		if (err) {
+			res.json({ status: 400, message: err, data: [] });
+		}
+		else {
+			if (results.length === 0) {
+				res.json({ status: 400, message: err, data: [] });
+			}
+			else {
+				// TODO: to wszystko powinno odbyć się w transakcji a nie tylko dodanie czy aktualizacja pozycji (ten model jest kiepski potrzebna lepsza specjalizacja)
+				let uz_id = req.decoded.uz_id;
+				let price = results[0];
+				dataModel.Cart.findByUserIdPriceId(uz_id, price.c_id, (err, results) => {
+					if (err) {
+						res.json({ status: 400, message: err, data: [] });
+					}
+					else {
+						if (results.length === 0) {
+							// pozycji nie było jeszcze w koszyku, jej dodanie
+							dataModel.Cart.save(uz_id, price.c_id, parseInt(req.body.amount, 10), (err, results) => {
+								if (err) {
+									res.json({ status: 400, message: err, data: [] });
+								}
+								else {
+									res.json({ status: 200, message: '', data: [] });
+								}
+							});
+						}
+						else {
+							// pozycja była w koszyku, jej aktualizacja
+							dataModel.Cart.update(results[0].ko_id, parseInt(results[0].ko_ile, 10) + parseInt(req.body.amount, 10), (err, results) => {
+								if (err) {
+									res.json({ status: 400, message: err, data: [] });
+								}
+								else {
+									res.json({ status: 200, message: '', data: [] });
+								}
+							});
+						}
+					}
+				});
+			}
+		}
+	});
+};

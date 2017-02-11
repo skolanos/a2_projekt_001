@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Http }       from '@angular/http';
-import { Headers }    from '@angular/http';
-import { Response }   from '@angular/http';
+import { Http, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthenticationService {
-	userToken: string;
+	private userToken: string;
 
 	constructor(private http: Http) {
 		this.userToken = '';
@@ -28,7 +26,15 @@ export class AuthenticationService {
 			password: password
 		}), {
 			headers: new Headers({ 'Content-Type': 'application/json' })
-		}).map((response: Response) => response.json());
+		}).map((response: Response) => {
+			let value = response.json();
+			if (value.status === 200) {
+				this.setUserToken(value.data[0].token);
+				console.log('Ustawiono token użytkownika w AuthenticationService.login()');
+			}
+
+			return value;
+		});
 	}
 	logout(): Observable<Response> {
 		return this.http.post('/api/user-logout', JSON.stringify({

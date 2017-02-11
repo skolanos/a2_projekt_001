@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 const serverConfig = require('./server-config');
 const dataModel = require('./data-model');
 
-/*const authenticatedUsers = [];*/
-
 module.exports.authenticateRequest = (req, res, next) => {
 	var token = req.headers['x-accss-token'] || req.body.token || req.query.token;
 
@@ -77,11 +75,10 @@ module.exports.login = (req, res) => {
 			}
 			else {
 				if (results.length === 1) {
-					let token = jwt.sign(results[0], serverConfig.jsonwebtoken.secret, { expiresIn: 60 * 24 });
-					/*authenticatedUsers.push({
-						user: results[0],
-						token: token
-					});*/
+					let tokenData = {
+						uz_id: results[0].uz_id
+					};
+					let token = jwt.sign(tokenData, serverConfig.jsonwebtoken.secret, { expiresIn: 60 * 24 });
 					res.json({ status: 200, message: '', data: [{ token: token }] });
 				}
 				else {

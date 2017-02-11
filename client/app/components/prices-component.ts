@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
-import { Input }  from '@angular/core';
-import { OnChanges } from '@angular/core';
+import { Component, OnChanges, Input } from '@angular/core';
 
 import { Item } from '../types/item.type';
 
+import { EventEmitterService } from '../services/event-emitter.service';
 import { ItemsService } from '../services/items.service';
 
 declare var BigDecimal: any;
@@ -14,7 +13,7 @@ declare var RoundingMode: any;
 	selector: 'prices-component',
 	templateUrl: 'prices-component.html'
 })
-export class PricesComponent implements OnChanges {
+export class PricesComponent implements /*OnDestroy,*/ OnChanges {
 	@Input() item: Item;
 	private prices: any[];
 	private selectedPrice: any;
@@ -23,7 +22,10 @@ export class PricesComponent implements OnChanges {
 	private processing: boolean;
 	private messages: string[];
 
-	constructor(private itemsService: ItemsService) {
+	constructor(
+		private eventEmitterService: EventEmitterService,
+		private itemsService: ItemsService
+	) {
 		this.processing = false;
 		this.messages = [];
 		this.prices = undefined;
@@ -51,32 +53,6 @@ export class PricesComponent implements OnChanges {
 
 		return (res && (res.length > 0)) ? true: false;
 	}
-	/*
-	private currencyToString(value: number): string {
-		let res: string = '';
-		let valueStr: string = String(value);
-		let pos: number = 0;
-		let x: string = '';
-		let y: string = '';
-
-		pos = valueStr.indexOf('.');
-		if (pos >= 0) {
-			x = valueStr.substr(0, pos - 1);
-			y = valueStr.substr(pos + 1, valueStr.length);
-			for (let i = y.length; i < 2; i += 1) {
-				y = y + '0';
-			}
-		}
-		else {
-			x = valueStr;
-			y = '00';
-		}
-
-		res = x + ',' + y;
-
-		return res;
-	}
-	*/
 	private computeValue(): void {
 		let amountBD: any = new BigDecimal(this.amount);
 		let priceBD: any = new BigDecimal(this.selectedPrice.c_cena);
@@ -85,15 +61,15 @@ export class PricesComponent implements OnChanges {
 		this.value = Number(valueBD.toString());
 	}
 	priceClick(selectedPrice: any): void {
-		// nie ma gwarancji że this.amount jest typu string,
-		// jak do pola wprowadzi się liczbę to typ się zmienia
+		// nie ma gwarancji że this.amount jest typu string, jak do pola wprowadzi
+		//  się liczbę to typ się zmienia
 		if (this.isValidInt(String(this.amount))) {
 			this.computeValue();
 		}
 	}
 	amountChange(): void {
-		// nie ma gwarancji że this.amount jest typu string,
-		// jak do pola wprowadzi się liczbę to typ się zmienia
+		// nie ma gwarancji że this.amount jest typu string, jak do pola wprowadzi
+		// się liczbę to typ się zmienia
 		if (this.isValidInt(String(this.amount))) {
 			this.computeValue();
 		}
@@ -104,7 +80,7 @@ export class PricesComponent implements OnChanges {
 		this.messages = [];
 		if (!this.selectedPrice) {
 			res = false;
-			this.messages.push('Proszę wybrać wariant cenowy.');
+			this.messages.push('Proszę wybrać wariant ceny.');
 		}
 		if (!((this.isValidInt(String(this.amount))) && (Number(this.amount) > 0))) {
 			res = false;
@@ -113,9 +89,27 @@ export class PricesComponent implements OnChanges {
 
 		return res;
 	}
-	addToCart(): void {
+	addItemToCart(): void {
 		if (this.checkForm()) {
-			console.log('Można umieścić towar w koszyku');
+			this.processing = true;
+			this.itemsService.addItemToCart(Number(this.amount), this.selectedPrice.c_id, this.value).subscribe((value: any) => {
+				this.processing = false;
+
+				this.prices = undefined;
+				this.selectedPrice = undefined;
+				this.amount = '1';
+				this.value = 0;
+				this.item = undefined;
+
+				// wygenerowanie zdarzenia przez EventEmitter nie jest możliwe, ponieważ
+				// nie ma powiązania pomiędzy komponentami przez router, konieczne jest
+				// użycie serwisu
+				this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
+			}, error => {
+				this.processing = false;
+				console.log('PricesComponent.addItemToCart() error:', error);
+				this.messages.push(error);
+			});
 		}
 	}
 }

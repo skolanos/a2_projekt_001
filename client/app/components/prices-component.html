@@ -25,7 +25,7 @@
 						</div>
 						<div *ngIf="selectedPrice" class="col-md-4">
 							<div><strong>Wartość: {{value}} PLN</strong></div>
-							<button type="submit" class="btn btn-primary" (click)="addToCart()" [disabled]="processing">Do koszyka</button>
+							<button type="submit" class="btn btn-primary" (click)="addItemToCart()" [disabled]="processing">Do koszyka</button>
 						</div>
 					</div>
 				</form>

@@ -13,14 +13,14 @@ export class RegisterUserComponent {
 	surname: string;
 	email: string;
 	password: string;
-	processiong: boolean;
+	processing: boolean;
 	messages: string[];
 
 	constructor(
 		private authenticationService: AuthenticationService,
 		private router: Router
 	) {
-		this.processiong = false;
+		this.processing = false;
 		this.firstName = '';
 		this.surname = '';
 		this.email = '';
@@ -51,21 +51,17 @@ export class RegisterUserComponent {
 		return res;
 	}
 	doRegister(): void {
-		console.log('RegisterUserComponent.doRegister() start:');
 		if (this.checkForm()) {
-			this.processiong = true;
+			this.processing = true;
 			this.authenticationService.register(this.firstName, this.surname, this.email, this.password).subscribe((data: any) => {
-				this.processiong = false;
-				console.log('RegisterUserComponent.doRegister() subscribe:', data);
+				this.processing = false;
 				if (data.status === 200) {
 					this.authenticationService.login(this.email, this.password).subscribe((data: any) => {
-						console.log('RegisterUserComponent.doRegister().login():', data);
 						if (data.status === 200) {
-							this.authenticationService.setUserToken(data.data[0].token);
+							//this.authenticationService.setUserToken(data.data[0].token);
 							this.router.navigate(['/items-list']);
 						}
 						else {
-							console.log('RegisterUserComponent.doRegister().login() subscribe ale brak tokena:', data);
 							this.messages.push(data.message);
 						}
 					}, error => {
@@ -77,7 +73,7 @@ export class RegisterUserComponent {
 					this.messages.push(data.message);
 				}
 			}, error => {
-				this.processiong = false;
+				this.processing = false;
 				console.log('RegisterUserComponent.doRegister() error:', error);
 				this.messages.push(error);
 			});

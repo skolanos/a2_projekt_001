@@ -33,3 +33,13 @@ CREATE TABLE ceny(
 	PRIMARY KEY (c_id)
 );
 CREATE INDEX ceny_001 ON ceny(c_t_id);
+
+CREATE TABLE koszyk (
+	ko_id    serial NOT NULL,
+	ko_uz_id integer REFERENCES uzytkownicy,
+	ko_c_id  integer REFERENCES ceny,
+	ko_ile   numeric,
+	PRIMARY KEY (ko_id)
+);
+CREATE INDEX koszyk_idx_001 ON koszyk(ko_uz_id);
+CREATE INDEX koszyk_idx_002 ON koszyk(ko_c_id);

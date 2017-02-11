@@ -5,6 +5,7 @@ import { HttpModule }    from '@angular/http';
 
 import { AppRoutingModule } from './app-routing.module';
 
+import { EventEmitterService }   from './services/event-emitter.service';
 import { AuthenticationService } from './services/authentication.service';
 import { ItemsService }          from './services/items.service';
 
@@ -31,6 +32,7 @@ import { PricesComponent }       from './components/prices-component';
 		PricesComponent
 	],
 	providers: [
+		EventEmitterService,
 		AuthenticationService,
 		ItemsService
 	],

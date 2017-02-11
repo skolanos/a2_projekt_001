@@ -10,10 +10,10 @@ import { AuthenticationService } from '../services/authentication.service';
 	styleUrls: ['login-user.component.css']
 })
 export class LoginUserComponent {
-	login: string;
-	password: string;
-	processing: boolean;
-	messages: string[];
+	private login: string;
+	private password: string;
+	private processing: boolean;
+	private messages: string[];
 
 	constructor(
 		private authenticationService: AuthenticationService,
@@ -48,7 +48,8 @@ export class LoginUserComponent {
 			this.authenticationService.login(this.login, this.password).subscribe((value: any) => {
 				this.processing = false;
 				if (value.status === 200) {
-					this.authenticationService.setUserToken(value.data[0].token);
+					//this.authenticationService.setUserToken(value.data[0].token);
+					console.log('Bazujemy w komponencie na tym że token został już wcześniej ustawiony');
 					this.router.navigate(['/items-list']);
 				}
 				else {

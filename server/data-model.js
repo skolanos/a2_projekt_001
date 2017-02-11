@@ -167,6 +167,28 @@ module.exports.Items = {
 	}
 };
 module.exports.Prices = {
+	findById: (id, callback) => {
+		var results = [],
+			query = {};
+
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined);
+			}
+			else {
+				results = [];
+				query = client.query('SELECT * FROM ceny WHERE (c_id=$1)', [id]);
+				query.on('row', (row) => {
+					results.push(row);
+				});
+				query.on('end', () => {
+					done();
+					callback(undefined, results);
+				})
+			}
+		});
+	},
 	findByItemId: (itemId, callback) => {
 		var results = [],
 			query = {};
@@ -186,6 +208,123 @@ module.exports.Prices = {
 					done();
 					callback(undefined, results);
 				})
+			}
+		});
+	}
+};
+module.exports.Cart = {
+	findByUserIdPriceId: (userId, priceId, callback) => {
+		var results = [],
+			query = {};
+
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined);
+			}
+			else {
+				results = [];
+				query = client.query('SELECT * FROM koszyk WHERE (ko_uz_id=$1) AND (ko_c_id=$2) ORDER BY ko_id', [userId, priceId]);
+				query.on('row', (row) => {
+					results.push(row);
+				});
+				query.on('end', () => {
+					done();
+					callback(undefined, results);
+				})
+			}
+		});
+	},
+	save: (userId, priceId, amount, callback) => {
+		var results = [],
+			query = {};
+
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined);
+			}
+			else {
+				client.query('BEGIN', (err) => {
+					if (err) {
+						client.query('ROLLBACK', (err) => {
+							done(err);
+							callback(err, undefined);
+						});
+					}
+					else {
+						client.query('INSERT INTO koszyk (ko_uz_id, ko_c_id, ko_ile) VALUES ($1, $2, $3)', [userId, priceId, amount], (err) => {
+							if (err) {
+								client.query('ROLLBACK', (err) => {
+									done(err);
+									callback(err, undefined);
+								});
+							}
+							else {
+								query = client.query('SELECT currval(pg_get_serial_sequence(\'koszyk\', \'ko_id\')) AS id');
+								query.on('row', (row) => {
+									results.push(row);
+								});
+								query.on('end', () => {
+									client.query('COMMIT', (err, result) => {
+										if (err) {
+											done(err);
+											callback(err, undefined);
+										}
+										else {
+											done();
+											callback(undefined, results);
+										}
+									});
+								})
+							}
+						});
+					}
+				});
+			}
+		});
+	},
+	update: (cartId, amount, callback) => {
+		var results = [],
+			query = {};
+
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined);
+			}
+			else {
+				client.query('BEGIN', (err) => {
+					if (err) {
+						client.query('ROLLBACK', (err) => {
+							done(err);
+							callback(err, undefined);
+						});
+					}
+					else {
+						client.query('UPDATE koszyk SET ko_ile=$1 WHERE WHERE (ko_id=$2)', [amount, cartId], (err) => {
+							if (err) {
+								client.query('ROLLBACK', (err) => {
+									done(err);
+									callback(err, undefined);
+								});
+							}
+							else {
+								client.query('COMMIT', (err, result) => {
+									if (err) {
+										done(err);
+										callback(err, undefined);
+									}
+									else {
+										results.push({id: cartId});
+										done();
+										callback(undefined, results);
+									}
+								});
+							}
+						});
+					}
+				});
 			}
 		});
 	}
