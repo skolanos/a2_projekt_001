@@ -7,43 +7,56 @@
 		</ul>
 	</div>
 	<prices-component [item]="selectedItem"></prices-component>
-	<div>
-		<select name="pageSize" [(ngModel)]="pageSize" size="1" (change)="pageSizeChange()">
-			<option *ngFor="let pageSizeItem of pageSizeItems" value="{{pageSizeItem.value}}">{{pageSizeItem.caption}}</option>
-		</select>
-		<label>pozycji na stronie</label>
-	</div>
-	<table class="table table-striped table-bordered table-hover table-sm">
-		<thead class="bg-faded">
-			<tr>
-				<th>Kategoria</th>
-				<th>Nazwa</th>
-				<th>Link</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let item of items" [class.table-info]="selectedItem && item.id === selectedItem.id" (click)="selectItemClick(item)">
-				<td>{{item.category}}</td>
-				<td>{{item.name}}</td>
-				<td>{{item.link}}</td>
-			</tr>
-		</tbody>
-	</table>
-	<nav *ngIf="rowsCount > 0">
-		<label>Pozycje od {{dataOffset + 1}} do {{(dataOffset + dataLimit < rowsCount) ? (dataOffset + dataLimit) : rowsCount}} z {{rowsCount}}</label>
-		<ul class="pagination justify-content-center">
-			<li class="page-item" [class.disabled]="currentPage === 0">
-				<a class="page-link" href="javascript:void(0)" (click)="getPrevPage()"><span aria-hidden="true">&laquo;</span></a>
-			</li>
-			<li *ngFor="let pageItem of pagesItems" class="page-item" [class.active]="pageItem.pageNo === currentPage">
-				<a class="page-link" href="javascript:void(0)" (click)="getPageData(pageItem)">{{pageItem.caption}}</a>
-			</li>
-			<li class="page-item" [class.disabled]="currentPage === lastPage - 1">
-				<a class="page-link" href="javascript:void(0)" (click)="getNextPage()"><span aria-hidden="true">&raquo;</span></a>
-			</li>
-		</ul>
-	</nav>
-	<div *ngIf="rowsCount === 0">
-		Brak pozycji.
-	</div>
+	<form novalidate>
+		<div>
+			<select name="pageSize" class="form-control" [(ngModel)]="pageSize" size="1" (change)="pageSizeChange()" style="width: auto; display: inline">
+				<option *ngFor="let pageSizeItem of pageSizeItems" value="{{pageSizeItem.value}}">{{pageSizeItem.caption}}</option>
+			</select>
+			<label>pozycji na stronie</label>
+		</div>
+		<table class="table table-striped table-bordered table-hover table-sm">
+			<thead class="bg-faded">
+				<tr>
+					<th>Kategoria</th>
+					<th>Nazwa</th>
+					<th>Link</th>
+				</tr><tr>
+					<th>
+						<select size="1" class="form-control" name="filterCategory" [(ngModel)]="filterCategory" placeholder="Filtr według kategorii" (change)="filterCategoryChange()">
+							<option value=""></option>
+							<option *ngFor="let category of categories" value="{{category.kat_id}}">{{category.kat_nazwa}}</option>
+						</select>
+					</th>
+					<th>
+						<input type="text" name="filterItemName" [(ngModel)]="filterItemName" class="form-control" placeholder="Filtr według nazwy"  (change)="filtrItemNameChange()">
+					</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let item of items" [class.table-info]="selectedItem && item.id === selectedItem.id" (click)="selectItemClick(item)">
+					<td>{{item.category}}</td>
+					<td>{{item.name}}</td>
+					<td>{{item.link}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<nav *ngIf="rowsCount > 0">
+			<label>Pozycje od {{dataOffset + 1}} do {{(dataOffset + dataLimit < rowsCount) ? (dataOffset + dataLimit) : rowsCount}} z {{rowsCount}}</label>
+			<ul class="pagination justify-content-center">
+				<li class="page-item" [class.disabled]="currentPage === 0">
+					<a class="page-link" href="javascript:void(0)" (click)="getPrevPage()"><span aria-hidden="true">&laquo;</span></a>
+				</li>
+				<li *ngFor="let pageItem of pagesItems" class="page-item" [class.active]="pageItem.pageNo === currentPage">
+					<a class="page-link" href="javascript:void(0)" (click)="getPageData(pageItem)">{{pageItem.caption}}</a>
+				</li>
+				<li class="page-item" [class.disabled]="currentPage === lastPage - 1">
+					<a class="page-link" href="javascript:void(0)" (click)="getNextPage()"><span aria-hidden="true">&raquo;</span></a>
+				</li>
+			</ul>
+		</nav>
+		<div *ngIf="rowsCount === 0">
+			Brak pozycji.
+		</div>
+	</form>
 </div>

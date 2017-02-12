@@ -120,8 +120,32 @@ module.exports.Users = {
 		});
 	}
 };
+module.exports.Categories = {
+	findAll: (callback) => {
+		var results = [],
+			query = {};
+
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined);
+			}
+			else {
+				results = [];
+				query = client.query('SELECT * FROM kategorie ORDER BY kat_nazwa');
+				query.on('row', (row) => {
+					results.push(row);
+				});
+				query.on('end', () => {
+					done();
+					callback(undefined, results);
+				})
+			}
+		});
+	}
+};
 module.exports.Items = {
-	findAll: (offset, limit, callback) => {
+	findAll: (filter, offset, limit, callback) => {
 		var results = [],
 			query = {};
 
@@ -143,7 +167,7 @@ module.exports.Items = {
 			}
 		});
 	},
-	getRowsCount: (callback) => {
+	getRowsCount: (filter, callback) => {
 		var results = [],
 			query = {};
 
@@ -225,6 +249,28 @@ module.exports.Cart = {
 			else {
 				results = [];
 				query = client.query('SELECT * FROM koszyk WHERE (ko_uz_id=$1) AND (ko_c_id=$2) ORDER BY ko_id', [userId, priceId]);
+				query.on('row', (row) => {
+					results.push(row);
+				});
+				query.on('end', () => {
+					done();
+					callback(undefined, results);
+				})
+			}
+		});
+	},
+	getRowsCount: (userId, callback) => {
+		var results = [],
+			query = {};
+
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined);
+			}
+			else {
+				results = [];
+				query = client.query('SELECT COUNT(*) AS rows_count FROM koszyk WHERE (ko_uz_id=$1)', [userId]);
 				query.on('row', (row) => {
 					results.push(row);
 				});

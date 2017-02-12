@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router }    from '@angular/router';
 
+import { EventEmitterService } from '../services/event-emitter.service';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class RegisterUserComponent {
 	messages: string[];
 
 	constructor(
+		private eventEmitterService: EventEmitterService,
 		private authenticationService: AuthenticationService,
 		private router: Router
 	) {
@@ -59,6 +61,7 @@ export class RegisterUserComponent {
 					this.authenticationService.login(this.email, this.password).subscribe((data: any) => {
 						if (data.status === 200) {
 							//this.authenticationService.setUserToken(data.data[0].token);
+							this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
 							this.router.navigate(['/items-list']);
 						}
 						else {

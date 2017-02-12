@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router }    from '@angular/router';
 
+import { EventEmitterService } from '../services/event-emitter.service';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class LoginUserComponent {
 	private messages: string[];
 
 	constructor(
+		private eventEmitterService: EventEmitterService,
 		private authenticationService: AuthenticationService,
 		private router: Router
 	) {
@@ -50,6 +52,7 @@ export class LoginUserComponent {
 				if (value.status === 200) {
 					//this.authenticationService.setUserToken(value.data[0].token);
 					console.log('Bazujemy w komponencie na tym że token został już wcześniej ustawiony');
+					this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
 					this.router.navigate(['/items-list']);
 				}
 				else {

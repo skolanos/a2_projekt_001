@@ -15,6 +15,7 @@ import { LoginUserComponent }    from './components/login-user.component';
 import { RegisterUserComponent } from './components/register-user.component';
 import { ItemsListComponent}     from './components/items-list.component';
 import { PricesComponent }       from './components/prices-component';
+import { CartListComponent }     from './components/cart-list.component';
 
 @NgModule({
 	imports: [
@@ -29,7 +30,8 @@ import { PricesComponent }       from './components/prices-component';
 		LoginUserComponent,
 		RegisterUserComponent,
 		ItemsListComponent,
-		PricesComponent
+		PricesComponent,
+		CartListComponent
 	],
 	providers: [
 		EventEmitterService,

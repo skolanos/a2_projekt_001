@@ -12,7 +12,7 @@
 				<a class="nav-link" routerLink="/items-list">Oferta</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link disabled">Koszyk</a>
+				<a class="nav-link" routerLink="/cart-list" [class.disabled]="cartNumItems === 0">Koszyk <span class="badge badge-pill badge-default" *ngIf="cartNumItems > 0">{{cartNumItems}}</span></a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link disabled">Zamówienia</a>

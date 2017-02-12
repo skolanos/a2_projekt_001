@@ -8,8 +8,10 @@ const router = express.Router();
 router.post('/user-register',    authenticationController.register);
 router.post('/user-login',       authenticationController.login);
 router.post('/user-logout',      authenticationController.logout);
+router.post('/categories-list',  authenticationController.authenticateRequest, itemsController.categoriesList);
 router.post('/items-list',       authenticationController.authenticateRequest, itemsController.itemsList);
 router.post('/item-prices',      authenticationController.authenticateRequest, itemsController.itemPrices);
 router.post('/item-add-to-cart', authenticationController.authenticateRequest, itemsController.itemAddToCart);
+router.post('/cart-number-of-items', authenticationController.authenticateRequest, itemsController.cartNumberOfItems);
 
 module.exports = router;

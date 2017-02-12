@@ -2,6 +2,16 @@ const serverConfig = require('./server-config');
 const dataModel = require('./data-model');
 const authenticationController = require('./authentication-controller');
 
+module.exports.categoriesList = (req, res) => {
+	dataModel.Categories.findAll((err, results) => {
+		if (err) {
+			res.json({ status: 400, message: err, data: [] });
+		}
+		else {
+			res.json({ status: 200, message: '', data: results });
+		}
+	});
+};
 module.exports.itemsList = (req, res) => {
 	var offset = 0,
 		limit = 0,
@@ -14,13 +24,13 @@ module.exports.itemsList = (req, res) => {
 	}
 
 	data = {};
-	dataModel.Items.getRowsCount((err, results) => {
+	dataModel.Items.getRowsCount({itemName: req.body.filter.itemName, categoryId: req.body.filter.categoryId}, (err, results) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
 		}
 		else {
 			data.rowsCount = results[0].rows_count;
-			dataModel.Items.findAll(offset, limit, (err, results) => {
+			dataModel.Items.findAll({itemName: req.body.filter.itemName, categoryId: req.body.filter.categoryId}, offset, limit, (err, results) => {
 				if (err) {
 					res.json({ status: 400, message: err, data: [] });
 				}
@@ -88,6 +98,17 @@ module.exports.itemAddToCart = (req, res) => {
 					}
 				});
 			}
+		}
+	});
+};
+module.exports.cartNumberOfItems = (req, res) => {
+	let uz_id = req.decoded.uz_id;
+	dataModel.Cart.getRowsCount(uz_id, (err, results) => {
+		if (err) {
+			res.json({ status: 400, message: err, data: [] });
+		}
+		else {
+			res.json({ status: 200, message: '', data: [ { rowsCount: results[0].rows_count } ] });
 		}
 	});
 };

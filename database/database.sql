@@ -24,7 +24,7 @@ CREATE TABLE towary (
 );
 CREATE INDEX towary_001 ON towary(t_kat_id);
 
-CREATE TABLE ceny(
+CREATE TABLE ceny (
 	c_id        serial NOT NULL,
 	c_t_id      integer REFERENCES towary,
 	c_cena      numeric(16,2) NOT NULL,

@@ -11,10 +11,22 @@ export class ItemsService {
 		private http: Http,
 		private authenticationService: AuthenticationService
 	) {}
-	getList(dataOffset: number, dataLimit: number): Observable<any> {
+	getCategoriesList(): Observable<any> {
+		return this.http.post('/api/categories-list', '', {
+			headers: new Headers({
+				'Content-Type': 'application/json',
+				'x-accss-token': this.authenticationService.getUserToken()
+			})
+		}).map((response: Response) => response.json());
+	}
+	getItemsList(dataOffset: number, dataLimit: number, filter: any): Observable<any> {
 		return this.http.post('/api/items-list', JSON.stringify({
 			dataOffset: dataOffset,
-			dataLimit: dataLimit
+			dataLimit: dataLimit,
+			filter: {
+				itemName: filter.itemName,
+				categoryId: filter.categoryId
+			}
 		}), {
 			headers: new Headers({
 				'Content-Type': 'application/json',
@@ -38,6 +50,14 @@ export class ItemsService {
 			priceId: priceId,
 			value: value
 		}), {
+			headers: new Headers({
+				'Content-Type': 'application/json',
+				'x-accss-token': this.authenticationService.getUserToken()
+			})
+		}).map((response: Response) => response.json());
+	}
+	getCartNumberOfItems(): Observable<any> {
+		return this.http.post('/api/cart-number-of-items', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
 				'x-accss-token': this.authenticationService.getUserToken()

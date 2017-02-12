@@ -32,7 +32,10 @@ export class ItemsListComponent implements OnInit {
 	pageSizeItems: PageSizeItem[];
 	pagesItems: PageItem[];
 	items: Item[];
+	categories: any[];
 	selectedItem: Item;
+	filterItemName: string;
+	filterCategory: string;
 
 	constructor(
 		private authenticationService: AuthenticationService,
@@ -53,10 +56,14 @@ export class ItemsListComponent implements OnInit {
 		this.dataLimit = 10;
 		this.pageSize = this.dataLimit.toString();
 		this.items = [];
+		this.categories = [];
 		this.selectedItem = undefined;
 		this.messages = [];
+		this.filterItemName = '';
+		this.filterCategory = '';
 	}
 	ngOnInit(): void {
+		this.getCategoriesList();
 		this.getItemsList();
 	}
 	private mapDataRows(rows: any[]): void {
@@ -135,18 +142,37 @@ export class ItemsListComponent implements OnInit {
 			}
 		}
 	}
+	getCategoriesList(): void {
+		this.processing = true;
+		this.itemsService.getCategoriesList().subscribe((value: any) => {
+			this.processing = false;
+			if (value.status === 200) {
+				this.categories = value.data;
+			}
+			else {
+				this.messages.push(value.message);
+			}
+		}, error => {
+			this.processing = false;
+			console.log('ItemsListComponent.getItemsList() error:', error);
+			this.messages.push(error);
+		});
+	}
 	getItemsList(): void {
 		this.processing = true;
-		this.itemsService.getList(this.dataOffset, this.dataLimit).subscribe(data => {
+		this.itemsService.getItemsList(this.dataOffset, this.dataLimit, {
+			itemName: this.filterItemName,
+			categoryId: this.filterCategory
+		}).subscribe((value: any) => {
 			this.processing = false;
-			if (data.status === 200) {
-				this.rowsCount = data.data.rowsCount;
+			if (value.status === 200) {
+				this.rowsCount = value.data.rowsCount;
 				this.lastPage = Math.ceil(this.rowsCount / this.dataLimit);
-				this.mapDataRows(data.data.rows);
+				this.mapDataRows(value.data.rows);
 				this.calculatePagesItems();
 			}
 			else {
-				this.messages.push(data.message);
+				this.messages.push(value.message);
 			}
 		}, error => {
 			this.processing = false;
@@ -185,5 +211,15 @@ export class ItemsListComponent implements OnInit {
 	}
 	selectItemClick(item: Item): void {
 		this.selectedItem = item;
+	}
+	filtrItemNameChange(): void {
+		this.dataOffset = 0;
+		this.currentPage = 0;
+		this.getItemsList();
+	}
+	filterCategoryChange(): void {
+		this.dataOffset = 0;
+		this.currentPage = 0;
+		this.getItemsList();
 	}
 }
