@@ -57,6 +57,9 @@ module.exports.itemAddToCart = (req, res) => {
 	// TODO: sprawdzenie czy priceId jest poprawną liczbą całkowitą
 	// TODO: sprawdzenie czy amount jest poprawną liczbą całkowitą
 	dataModel.Prices.findById(req.body.priceId, (err, results) => {
+		var uz_id = 0,
+			price = {};
+
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
 		}
@@ -66,8 +69,8 @@ module.exports.itemAddToCart = (req, res) => {
 			}
 			else {
 				// TODO: to wszystko powinno odbyć się w transakcji a nie tylko dodanie czy aktualizacja pozycji (ten model jest kiepski potrzebna lepsza specjalizacja)
-				let uz_id = req.decoded.uz_id;
-				let price = results[0];
+				uz_id = req.decoded.uz_id;
+				price = results[0];
 				dataModel.Cart.findByUserIdPriceId(uz_id, price.c_id, (err, results) => {
 					if (err) {
 						res.json({ status: 400, message: err, data: [] });
@@ -102,7 +105,7 @@ module.exports.itemAddToCart = (req, res) => {
 	});
 };
 module.exports.cartNumberOfItems = (req, res) => {
-	let uz_id = req.decoded.uz_id;
+	var uz_id = req.decoded.uz_id;
 	dataModel.Cart.getRowsCount(uz_id, (err, results) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });

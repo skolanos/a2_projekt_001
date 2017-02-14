@@ -3,6 +3,28 @@ const bcrypt = require('bcryptjs');
 
 const serverConfig = require('./server-config');
 
+itemsGetWhereFromFilter = (filter, params) => {
+	var sqlWhere = '',
+		sqlParams = [];
+
+	sqlParams = params.slice();
+	if (filter) {
+		if (filter.categoryId) {
+			sqlParams.push(filter.categoryId);
+			sqlWhere += ' AND (t_kat_id=$' + sqlParams.length + ') ';
+		}
+		if (filter.itemName && filter.itemName !== '') {
+			sqlParams.push('%' + filter.itemName + '%');
+			sqlWhere += ' AND (UPPER(t_nazwa) LIKE UPPER($' + sqlParams.length + ')) '
+		}
+	}
+
+	return {
+		where: sqlWhere,
+		params: sqlParams
+	};
+};
+
 module.exports.Users = {
 	findByEmail: (email, callback) => {
 		var results = [],
@@ -42,11 +64,12 @@ module.exports.Users = {
 					results.push(row);
 				});
 				query.on('end', () => {
-					var res = [];
+					var res = [],
+						i = 0;
 
 					done();
 					res = [];
-					for (let i = 0; i < results.length; i += 1) {
+					for (i = 0; i < results.length; i += 1) {
 						if (bcrypt.compareSync(password, results[i].uz_haslo)) {
 							res.push(results[i]);
 						}
@@ -147,7 +170,17 @@ module.exports.Categories = {
 module.exports.Items = {
 	findAll: (filter, offset, limit, callback) => {
 		var results = [],
-			query = {};
+			query = {},
+			sql = '',
+			dataSql = {};
+
+		dataSql = itemsGetWhereFromFilter(filter, [limit, offset]);
+		sql = 'SELECT t_id AS id, t_nazwa AS nazwa, t_link AS link, t_kat_id AS kat_id, kat_nazwa AS kat_nazwa ' +
+			'FROM towary ' +
+			'LEFT JOIN kategorie ON (t_kat_id=kat_id) ' +
+			'WHERE (1=1) ' + dataSql.where + ' ' +
+			'ORDER BY t_nazwa ' +
+			'LIMIT $1 OFFSET $2';
 
 		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
 			if (err) {
@@ -156,7 +189,7 @@ module.exports.Items = {
 			}
 			else {
 				results = [];
-				query = client.query('SELECT t_id AS id, t_nazwa AS nazwa, t_link AS link, kat_id AS kat_id, kat_nazwa AS kat_nazwa FROM towary LEFT JOIN kategorie ON (t_kat_id=kat_id) ORDER BY t_nazwa LIMIT $1 OFFSET $2', [limit, offset]);
+				query = client.query(sql, dataSql.params);
 				query.on('row', (row) => {
 					results.push(row);
 				});
@@ -169,7 +202,14 @@ module.exports.Items = {
 	},
 	getRowsCount: (filter, callback) => {
 		var results = [],
-			query = {};
+			query = {},
+			sql = '',
+			dataSql = {};
+
+		dataSql = itemsGetWhereFromFilter(filter, []);
+		sql = 'SELECT COUNT(*) AS rows_count ' +
+			'FROM towary ' +
+			'WHERE (1=1) ' + dataSql.where;
 
 		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
 			if (err) {
@@ -178,7 +218,7 @@ module.exports.Items = {
 			}
 			else {
 				results = [];
-				query = client.query('SELECT COUNT(*) AS rows_count FROM towary');
+				query = client.query(sql, dataSql.params);
 				query.on('row', (row) => {
 					results.push(row);
 				});

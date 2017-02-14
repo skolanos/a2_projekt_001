@@ -70,15 +70,18 @@ module.exports.login = (req, res) => {
 
 	if (validateParams(req)) {
 		dataModel.Users.findByEmailPassword(req.body.email, req.body.password, (err, results) => {
+			var tokenData = {},
+				token = '';
+
 			if (err) {
 				res.json({ status: 400, message: err, data: [] });
 			}
 			else {
 				if (results.length === 1) {
-					let tokenData = {
+					tokenData = {
 						uz_id: results[0].uz_id
 					};
-					let token = jwt.sign(tokenData, serverConfig.jsonwebtoken.secret, { expiresIn: 60 * 24 });
+					token = jwt.sign(tokenData, serverConfig.jsonwebtoken.secret, { expiresIn: 60 * 24 });
 					res.json({ status: 200, message: '', data: [{ token: token }] });
 				}
 				else {

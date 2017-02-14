@@ -166,7 +166,7 @@ export class ItemsListComponent implements OnInit {
 		}).subscribe((value: any) => {
 			this.processing = false;
 			if (value.status === 200) {
-				this.rowsCount = value.data.rowsCount;
+				this.rowsCount = Number(value.data.rowsCount);
 				this.lastPage = Math.ceil(this.rowsCount / this.dataLimit);
 				this.mapDataRows(value.data.rows);
 				this.calculatePagesItems();
