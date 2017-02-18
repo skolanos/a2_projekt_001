@@ -3,6 +3,13 @@ const jwt = require('jsonwebtoken');
 const serverConfig = require('./server-config');
 const dataModel = require('./data-model');
 
+/**
+ * Procedura sprawdza czy przekazno prawidłowy token przy żądaniu.
+ * 
+ * @param req {object} request
+ * @param res {object} response
+ * @param next {function}
+ */
 module.exports.authenticateRequest = (req, res, next) => {
 	var token = req.headers['x-accss-token'] || req.body.token || req.query.token;
 
@@ -21,40 +28,40 @@ module.exports.authenticateRequest = (req, res, next) => {
 		return res.status(403).json({ status: 403, message: 'Nie można przeprowadzić weryfikacji żadania', data: [] });
 	}
 };
+
+/**
+ * Procedura rejestruje nowego użytkownika.
+ * 
+ * @param req {object} request
+ * @param res {object} response
+ */
 module.exports.register = (req, res) => {
-	dataModel.Users.findByEmail(req.body.email, (err, results) => {
+	// TODO: sprawdzenie poprawności przesłanych danych
+	dataModel.BO.registerNewUser({
+		firstName: req.body.firstName,
+		surname: req.body.surname,
+		email: req.body.email,
+		password: req.body.password
+	}, (err, value) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
 		}
 		else {
-			if (results.length === 0) {
-				dataModel.Users.save(req.body.firstName, req.body.surname, req.body.email, req.body.password, (err, results) => {
-					if (err) {
-						res.json({ status: 400, message: err, data: [] });
-					}
-					else {
-						dataModel.Users.findByEmailPassword(req.body.email, req.body.password, (err, results) => {
-							if (err) {
-								res.json({ status: 400, message: err, data: [] });
-							}
-							else {
-								if (results.length === 1) {
-									res.json({ status: 200, message: '', data: [] });
-								}
-								else {
-									res.json({ status: 400, message: 'Nieprawidłowy adres e-mail albo hasło użytkownika.', data: [] });
-								}
-							}
-						});
-					}
-				});
+			if (value.status === 0) {
+				res.json({ status: 200, message: '', data: [] });
 			}
 			else {
-				res.json({ status: 400, message: 'Użytkownik o podanym adresie e-mail jest już zarejestrowany.', data: [] });
+				res.json({ status: 400, message: value.message, data: [] });
 			}
 		}
 	});
 };
+/**
+ * Procedura loguje użytkownika.
+ * 
+ * @param req {object} request
+ * @param res {object} response
+ */
 module.exports.login = (req, res) => {
 	function validateParams(req) {
 		var res = true;
@@ -69,23 +76,19 @@ module.exports.login = (req, res) => {
 	}
 
 	if (validateParams(req)) {
-		dataModel.Users.findByEmailPassword(req.body.email, req.body.password, (err, results) => {
-			var tokenData = {},
-				token = '';
-
+		dataModel.BO.userLogin({
+			email: req.body.email,
+			password: req.body.password
+		}, (err, value) => {
 			if (err) {
 				res.json({ status: 400, message: err, data: [] });
 			}
 			else {
-				if (results.length === 1) {
-					tokenData = {
-						uz_id: results[0].uz_id
-					};
-					token = jwt.sign(tokenData, serverConfig.jsonwebtoken.secret, { expiresIn: 60 * 24 });
-					res.json({ status: 200, message: '', data: [{ token: token }] });
+				if (value.status === 0) {
+					res.json({ status: 200, message: '', data: [{ token: value.data[0].token }] });
 				}
 				else {
-					res.json({ status: 400, message: 'Nieprawidłowy adres e-mail albo hasło użytkownika.', data: [] });
+					res.json({ status: 400, message: value.message, data: [] });
 				}
 			}
 		});
@@ -94,6 +97,12 @@ module.exports.login = (req, res) => {
 		res.json({ status: 400, message: 'Nieprawidłowy adres e-mail albo hasło użytkownika.', data: [] });
 	}
 };
+/**
+ * Procedura wylogowuje użytkownika.
+ * 
+ * @param req {object} request
+ * @param res {object} response
+ */
 module.exports.logout = (req, res) => {
 	res.json({ status: 200, message: '', data: [] });
 };
