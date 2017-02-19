@@ -6,8 +6,8 @@ const dataModel = require('./data-model');
 /**
  * Procedura sprawdza czy przekazno prawidłowy token przy żądaniu.
  * 
- * @param req {object} request
- * @param res {object} response
+ * @param req {Request} request
+ * @param res {Response} response
  * @param next {function}
  */
 module.exports.authenticateRequest = (req, res, next) => {
@@ -32,38 +32,70 @@ module.exports.authenticateRequest = (req, res, next) => {
 /**
  * Procedura rejestruje nowego użytkownika.
  * 
- * @param req {object} request
- * @param res {object} response
+ * @param req {Request} request
+ * @param res {Response} response
  */
 module.exports.register = (req, res) => {
-	// TODO: sprawdzenie poprawności przesłanych danych
-	dataModel.BO.registerNewUser({
-		firstName: req.body.firstName,
-		surname: req.body.surname,
-		email: req.body.email,
-		password: req.body.password
-	}, (err, value) => {
-		if (err) {
-			res.json({ status: 400, message: err, data: [] });
+	let validateParams = (req) => {
+		var res = true;
+
+		if (req.body.firstName === '') {
+			res = false;
 		}
-		else {
-			if (value.status === 0) {
-				res.json({ status: 200, message: '', data: [] });
+		if (req.body.surname === '') {
+			res = false;
+		}
+		if (req.body.email === '') {
+			res = false;
+		}
+		// TODO: sprawdzenie czy email jest poprawny (jeżeli chodzi o format)
+		/*
+		let re = /^[a-zA-Z0-9\._%+\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/;
+		if (!re.test(req.body.email)) {
+			res = false;
+		}
+		*/
+		if (req.body.email.indexOf('@') < 0) {
+			res = false;
+		}
+		if (req.body.password === '') {
+			res = false;
+		}
+		return res;
+	};
+
+	if (validateParams(req)) {
+		dataModel.BO.registerNewUser({
+			firstName: req.body.firstName,
+			surname: req.body.surname,
+			email: req.body.email,
+			password: req.body.password
+		}, (err, value) => {
+			if (err) {
+				res.json({ status: 400, message: err, data: [] });
 			}
 			else {
-				res.json({ status: 400, message: value.message, data: [] });
+				if (value.status === 0) {
+					res.json({ status: 200, message: '', data: [] });
+				}
+				else {
+					res.json({ status: 400, message: value.message, data: [] });
+				}
 			}
-		}
-	});
+		});
+	}
+	else {
+		res.json({ status: 400, message: 'Nie podano wszystkich potrzebnych danych.', data: [] });
+	}
 };
 /**
  * Procedura loguje użytkownika.
  * 
- * @param req {object} request
- * @param res {object} response
+ * @param req {Request} request
+ * @param res {Response} response
  */
 module.exports.login = (req, res) => {
-	function validateParams(req) {
+	let validateParams = (req) => {
 		var res = true;
 
 		if (req.body.email === '') {
@@ -73,7 +105,7 @@ module.exports.login = (req, res) => {
 			res = false;
 		}
 		return res;
-	}
+	};
 
 	if (validateParams(req)) {
 		dataModel.BO.userLogin({
@@ -100,8 +132,8 @@ module.exports.login = (req, res) => {
 /**
  * Procedura wylogowuje użytkownika.
  * 
- * @param req {object} request
- * @param res {object} response
+ * @param req {Request} request
+ * @param res {Response} response
  */
 module.exports.logout = (req, res) => {
 	res.json({ status: 200, message: '', data: [] });

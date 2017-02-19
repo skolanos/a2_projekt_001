@@ -1,117 +1,88 @@
-const serverConfig = require('./server-config');
 const dataModel = require('./data-model');
-const authenticationController = require('./authentication-controller');
 
+/**
+ * Procedura zwraca listę kategorii towarów.
+ * 
+ * @param req {Request}
+ * @param res {Response}
+ */
 module.exports.categoriesList = (req, res) => {
-	dataModel.Categories.findAll((err, results) => {
+	dataModel.BO.getCategoriesList((err, value) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
 		}
 		else {
-			res.json({ status: 200, message: '', data: results });
+			res.json({ status: 200, message: '', data: value.data });
 		}
 	});
 };
+/**
+ * Procedura zwraca listę towarów.
+ * 
+ * @param req {Request}
+ * @param res {Response}
+ */
 module.exports.itemsList = (req, res) => {
-	var offset = 0,
-		limit = 0,
-		data = {};
+	const minLimit = 5;
+	const maxLimit = 100;
 
-	offset = parseInt(req.body.dataOffset, 10);
-	limit = 20;
-	if ((parseInt(req.body.dataLimit, 10) >= 5) && (parseInt(req.body.dataLimit, 10) <= 100)) {
+	// TODO: sprawdzenie poprawności przekazanych danych (dataOffset: int, dataLimit: int, categoryId: ?int)
+	let offset = parseInt(req.body.dataOffset, 10);
+	let limit = 20;
+	if ((parseInt(req.body.dataLimit, 10) >= minLimit) && (parseInt(req.body.dataLimit, 10) <= maxLimit)) {
 		limit = parseInt(req.body.dataLimit, 10);
 	}
-
-	data = {};
-	dataModel.Items.getRowsCount({itemName: req.body.filter.itemName, categoryId: req.body.filter.categoryId}, (err, results) => {
+	dataModel.BO.getItemsList({
+		filter: {
+			itemName: req.body.filter.itemName,
+			categoryId: req.body.filter.categoryId,
+		},
+		offset: offset,
+		limit: limit
+	}, (err, value) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
 		}
 		else {
-			data.rowsCount = results[0].rows_count;
-			dataModel.Items.findAll({itemName: req.body.filter.itemName, categoryId: req.body.filter.categoryId}, offset, limit, (err, results) => {
-				if (err) {
-					res.json({ status: 400, message: err, data: [] });
-				}
-				else {
-					data.rows = results;
-					res.json({ status: 200, message: '', data: data });
-				}
-			});
+			res.json({ status: 200, message: '', data: { rowsCount: value.data.rowsCount, rows: value.data.rows } });
 		}
 	});
 };
+/**
+ * Procedura zwraca listę cen dla wybranego towaru.
+ * 
+ * @param req {Request}
+ * @param res {Response}
+ */
 module.exports.itemPrices = (req, res) => {
-	// TODO: sprawdzenie czy itemId jest poprawną liczbą całkowitą
-	dataModel.Prices.findByItemId(req.body.itemId, (err, results) => {
+	// TODO: sprawdzenie poprawności przekazanych danych (itemId: int)
+	dataModel.BO.getItemPricesList({ itemId: req.body.itemId }, (err, value) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
 		}
 		else {
-			res.json({ status: 200, message: '', data: results });
+			res.json({ status: 200, message: '', data: value.data });
 		}
 	});
 };
 module.exports.itemAddToCart = (req, res) => {
-	// TODO: sprawdzenie czy priceId jest poprawną liczbą całkowitą
-	// TODO: sprawdzenie czy amount jest poprawną liczbą całkowitą
-	dataModel.Prices.findById(req.body.priceId, (err, results) => {
-		var uz_id = 0,
-			price = {};
-
+	// TODO: sprawdzenie poprawności przekazanych danych (priceId: int, amount: int+)
+	dataModel.BO.addItemToCart({ userId: req.decoded.uz_id, priceId: req.body.priceId, amount: parseInt(req.body.amount, 10) }, (err, value) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
 		}
 		else {
-			if (results.length === 0) {
-				res.json({ status: 400, message: err, data: [] });
-			}
-			else {
-				// TODO: to wszystko powinno odbyć się w transakcji a nie tylko dodanie czy aktualizacja pozycji (ten model jest kiepski potrzebna lepsza specjalizacja)
-				uz_id = req.decoded.uz_id;
-				price = results[0];
-				dataModel.Cart.findByUserIdPriceId(uz_id, price.c_id, (err, results) => {
-					if (err) {
-						res.json({ status: 400, message: err, data: [] });
-					}
-					else {
-						if (results.length === 0) {
-							// pozycji nie było jeszcze w koszyku, jej dodanie
-							dataModel.Cart.save(uz_id, price.c_id, parseInt(req.body.amount, 10), (err, results) => {
-								if (err) {
-									res.json({ status: 400, message: err, data: [] });
-								}
-								else {
-									res.json({ status: 200, message: '', data: [] });
-								}
-							});
-						}
-						else {
-							// pozycja była w koszyku, jej aktualizacja
-							dataModel.Cart.update(results[0].ko_id, parseInt(results[0].ko_ile, 10) + parseInt(req.body.amount, 10), (err, results) => {
-								if (err) {
-									res.json({ status: 400, message: err, data: [] });
-								}
-								else {
-									res.json({ status: 200, message: '', data: [] });
-								}
-							});
-						}
-					}
-				});
-			}
+			res.json({ status: 200, message: '', data: [] });
 		}
 	});
 };
 module.exports.cartNumberOfItems = (req, res) => {
-	var uz_id = req.decoded.uz_id;
-	dataModel.Cart.getRowsCount(uz_id, (err, results) => {
+	dataModel.BO.getNumberOfItemsInCart({ userId: req.decoded.uz_id }, (err, value) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });
 		}
 		else {
-			res.json({ status: 200, message: '', data: [ { rowsCount: results[0].rows_count } ] });
+			res.json({ status: 200, message: '', data: [ { rowsCount: value.data[0].rows_count } ] });
 		}
 	});
 };
