@@ -65,6 +65,12 @@ module.exports.itemPrices = (req, res) => {
 		}
 	});
 };
+/**
+ * Procedura dodaje towar do koszyka.
+ * 
+ * @param req {Request}
+ * @param res {Response}
+ */
 module.exports.itemAddToCart = (req, res) => {
 	// TODO: sprawdzenie poprawności przekazanych danych (priceId: int, amount: int+)
 	dataModel.BO.addItemToCart({ userId: req.decoded.uz_id, priceId: req.body.priceId, amount: parseInt(req.body.amount, 10) }, (err, value) => {
@@ -73,16 +79,6 @@ module.exports.itemAddToCart = (req, res) => {
 		}
 		else {
 			res.json({ status: 200, message: '', data: [] });
-		}
-	});
-};
-module.exports.cartNumberOfItems = (req, res) => {
-	dataModel.BO.getNumberOfItemsInCart({ userId: req.decoded.uz_id }, (err, value) => {
-		if (err) {
-			res.json({ status: 400, message: err, data: [] });
-		}
-		else {
-			res.json({ status: 200, message: '', data: [ { rowsCount: value.data[0].rows_count } ] });
 		}
 	});
 };

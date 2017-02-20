@@ -322,5 +322,25 @@ module.exports.BO = {
 				});
 			}
 		});
+	},
+	getItemsListInCart: (dataObj, callback) => {
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined)
+			}
+			else {
+				Cart.findAll({ userId: dataObj.userId }, { client: client }, (err, value) => {
+					if (err) {
+						done(err);
+						callback(err, undefined)
+					}
+					else {
+						done();
+						callback(undefined, { status: 0, message: '', data: value });
+					}
+				});
+			}
+		});
 	}
 };

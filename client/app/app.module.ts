@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { EventEmitterService }   from './services/event-emitter.service';
 import { AuthenticationService } from './services/authentication.service';
 import { ItemsService }          from './services/items.service';
+import { CartService }           from './services/cart.service';
 
 import { AppComponent }          from './app.component';
 import { NavbarComponent }       from './components/navbar.component';
@@ -36,7 +37,8 @@ import { CartListComponent }     from './components/cart-list.component';
 	providers: [
 		EventEmitterService,
 		AuthenticationService,
-		ItemsService
+		ItemsService,
+		CartService
 	],
 	bootstrap: [
 		AppComponent

@@ -11,6 +11,18 @@ module.exports = {
 			callback(undefined, results);
 		});
 	},
+	findAll: (dataObj, dbConnObj, callback) => {
+		let client = dbConnObj.client;
+		let results = [];
+
+		let query = client.query('SELECT * FROM koszyk WHERE (ko_uz_id=$1) ORDER BY ko_id', [dataObj.userId]);
+		query.on('row', (row) => {
+			results.push(row);
+		});
+		query.on('end', () => {
+			callback(undefined, results);
+		});
+	},
 	findByUserIdPriceId: (dataObj, dbConnObj, callback) => {
 		let client = dbConnObj.client;
 		let results = [];

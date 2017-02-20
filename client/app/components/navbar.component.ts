@@ -31,7 +31,7 @@ export class NavbarComponent implements OnDestroy {
 	getCartNumberOfItems(): void {
 		this.itemsService.getCartNumberOfItems().subscribe((value: any) => {
 			if (value.status === 200) {
-				this.cartNumItems = value.data[0].rowsCount;
+				this.cartNumItems = parseInt(value.data[0].rowsCount, 10);
 			}
 			else {
 				console.log('NavbarComponent.getCartNumberOfItems():', value);

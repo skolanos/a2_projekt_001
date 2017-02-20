@@ -1,3 +1,44 @@
 <div class="container">
-	<h1>Koszyk</h1>
+	<h1 class="page-header">Koszyk - lista produktów znajdujących się w koszyku</h1>
+	<div class="alert alert-danger" *ngIf="messages.length > 0">
+		<strong>Informacje:</strong><br>
+		<ul>
+			<li *ngFor="let message of messages">{{message}}</li>
+		</ul>
+	</div>
+<!--
+	<table class="table table-striped table-bordered table-hover table-sm">
+		<thead class="bg-faded">
+			<tr>
+				<th>Kategoria</th>
+				<th>Nazwa</th>
+				<th>Link</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let item of items" [class.table-info]="selectedItem && item.id === selectedItem.id" (click)="selectItemClick(item)">
+				<td>{{item.category}}</td>
+				<td>{{item.name}}</td>
+				<td>{{item.link}}</td>
+			</tr>
+		</tbody>
+	</table>
+-->
+	<table class="table table-striped table-bordered table-hover table-sm">
+		<thead class="bg-faded">
+			<tr>
+				<th>ko_id</th>
+				<th>ko_c_id</th>
+				<th>ko_ile</th>
+				<th>ko_uz_id</th>
+			</tr>
+		<tbody>
+			<tr *ngFor="let item of items" [class.table-info]="selectedItem && item.ko_id === selectedItem.ko_id" (click)="selectItemClick(item)">
+				<td>{{item.ko_id}}</td>
+				<td>{{item.ko_c_id}}</td>
+				<td>{{item.ko_ile}}</td>
+				<td>{{item.ko_uz_id}}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

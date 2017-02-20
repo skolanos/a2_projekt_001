@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { Item } from '../types/item.type';
 
-import { AuthenticationService } from '../services/authentication.service';
 import { ItemsService } from '../services/items.service';
 
 interface PageSizeItem {
@@ -21,26 +20,23 @@ interface PageItem {
 	templateUrl: 'items-list.component.html',
 })
 export class ItemsListComponent implements OnInit {
-	processing: boolean;
-	messages: string[];
-	rowsCount: number;
-	currentPage: number;
-	lastPage: number;
-	dataOffset: number;
-	dataLimit: number;
-	pageSize: string;
-	pageSizeItems: PageSizeItem[];
-	pagesItems: PageItem[];
-	items: Item[];
-	categories: any[];
-	selectedItem: Item;
-	filterItemName: string;
-	filterCategory: string;
+	private processing: boolean;
+	private messages: string[];
+	private rowsCount: number;
+	private currentPage: number;
+	private lastPage: number;
+	private dataOffset: number;
+	private dataLimit: number;
+	private pageSize: string;
+	private pageSizeItems: PageSizeItem[];
+	private pagesItems: PageItem[];
+	private items: Item[];
+	private categories: any[];
+	private selectedItem: Item;
+	private filterItemName: string;
+	private filterCategory: string;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private itemsService: ItemsService
-	) {
+	constructor(private itemsService: ItemsService) {
 		this.processing = false;
 		this.pageSizeItems = [
 			{ value: 10, caption: '10' },
