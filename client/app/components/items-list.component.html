@@ -7,7 +7,7 @@
 		</ul>
 	</div>
 	<prices-component [item]="selectedItem"></prices-component>
-	<form novalidate>
+	<form name="form" novalidate>
 		<div>
 			<select name="pageSize" class="form-control" [(ngModel)]="pageSize" size="1" (change)="pageSizeChange()" style="width: auto; display: inline">
 				<option *ngFor="let pageSizeItem of pageSizeItems" value="{{pageSizeItem.value}}">{{pageSizeItem.caption}}</option>

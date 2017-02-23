@@ -6,7 +6,7 @@
 		<button type="submit" class="btn btn-primary my-2 my-sm-0" [disabled]="processiong">Zaloguj się</button>
 		<a class="nav-link" href="javascript:void(0)" (click)="dontRememberPassword()">Nie pamiętasz hasła?</a>
 </form>
-<form name="form" class="form-inline my-2 my-lg-0" onsubmit="return false" *ngIf="authenticationService.getUserToken() !== ''">
+<form name="form2" class="form-inline my-2 my-lg-0" onsubmit="return false" *ngIf="authenticationService.getUserToken() !== ''">
 	<!--<a class="nav-link" href="javascript:void(0)" (click)="doLogout()">Wyloguj się</a>-->
 	<button type="submit" class="btn btn-warning my-2 my-sm-0" (click)="doLogout()">Wyloguj się</button>
 </form>

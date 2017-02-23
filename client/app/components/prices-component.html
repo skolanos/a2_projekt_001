@@ -9,7 +9,7 @@
 		<div class="card-header"><strong>Wybrany towar: {{item.name}}</strong></div>
 		<div class="card-block">
 			<div *ngIf="prices">
-				<form onsubmit="return false" novalidate>
+				<form name="form" onsubmit="return false" novalidate>
 					<div class="row">
 						<div  class="col-md-4">
 							<div *ngFor="let price of prices">
