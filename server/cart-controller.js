@@ -21,6 +21,7 @@ module.exports.cartItemsList = (req, res) => {
 	});
 };
 module.exports.cartDeleteItem = (req, res) => {
+	// TODO: sprawdzenie poprawności parametrów (cartId: +int)
 	dataModel.BO.deleteItemFromCart({ userId: req.decoded.uz_id, cartId: req.body.cartId }, (err, value) => {
 		if (err) {
 			res.json({ status: 400, message: err, data: [] });

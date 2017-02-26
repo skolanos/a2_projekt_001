@@ -15,7 +15,7 @@
 				<a class="nav-link" routerLink="/cart-list" [class.disabled]="cartNumItems === 0">Koszyk <span class="badge badge-pill badge-default" *ngIf="cartNumItems > 0">{{cartNumItems}}</span></a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link disabled">Zamówienia</a>
+				<a class="nav-link" routerLink="/orders-list" [class.disabled]="ordersNumItems === 0">Zamówienia <span class="badge badge-pill badge-default" *ngIf="activeOrdersNumItems > 0">{{activeOrdersNumItems}}</span></a>
 			</li>
 		</ul>
 		<login-user-component></login-user-component>

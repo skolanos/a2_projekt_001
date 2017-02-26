@@ -61,3 +61,8 @@ insert into (t_id, t_nazwa, t_link, t_kat_id) values ( 57, 'kabaczek', '', 2);
 insert into (t_id, t_nazwa, t_link, t_kat_id) values ( 58, 'kalafior', '', 2);
 insert into (t_id, t_nazwa, t_link, t_kat_id) values ( 59, 'kalarepa', '', 2);
 insert into (t_id, t_nazwa, t_link, t_kat_id) values ( 60, 'kapar', '', 2);
+
+INSERT INTO zamowienia_statusy (zas_id, zas_nazwa) VALUES (1, 'zarejestrowane');
+INSERT INTO zamowienia_statusy (zas_id, zas_nazwa) VALUES (2, 'w realizacji');
+INSERT INTO zamowienia_statusy (zas_id, zas_nazwa) VALUES (3, 'zrealizowane');
+INSERT INTO zamowienia_statusy (zas_id, zas_nazwa) VALUES (4, 'anulowane');

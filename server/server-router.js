@@ -3,6 +3,7 @@ const express = require('express');
 const authenticationController = require('./authentication-controller');
 const itemsController = require('./items-controller');
 const cartController = require('./cart-controller');
+const ordersController = require('./orders-controller');
 
 const router = express.Router();
 
@@ -17,5 +18,8 @@ router.post('/cart-number-of-items',  authenticationController.authenticateReque
 router.post('/cart-items-list',       authenticationController.authenticateRequest, cartController.cartItemsList);
 router.post('/cart-delete-item',      authenticationController.authenticateRequest, cartController.cartDeleteItem);
 router.post('/cart-delete-all-items', authenticationController.authenticateRequest, cartController.cartDeleteAllItems);
+router.post('/orders-register-new',   authenticationController.authenticateRequest, ordersController.orderRegisterNew);
+router.post('/orders-number-of-orders', authenticationController.authenticateRequest, ordersController.ordersNumberOfOrders);
+router.post('/orders-number-of-active-orders', authenticationController.authenticateRequest, ordersController.ordersNumberOfActiveOrders);
 
 module.exports = router;

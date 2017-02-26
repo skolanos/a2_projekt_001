@@ -51,8 +51,8 @@ export class LoginUserComponent {
 				this.processing = false;
 				if (value.status === 200) {
 					//this.authenticationService.setUserToken(value.data[0].token);
-					console.log('Bazujemy w komponencie na tym że token został już wcześniej ustawiony');
 					this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
+					this.eventEmitterService.confirmUsersOrdersChanged({ event: 'refresh' });
 					this.router.navigate(['/items-list']);
 				}
 				else {

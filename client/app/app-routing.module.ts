@@ -5,11 +5,13 @@ import { RouterModule } from '@angular/router'
 import { RegisterUserComponent } from './components/register-user.component';
 import { ItemsListComponent }    from './components/items-list.component';
 import { CartListComponent }     from './components/cart-list.component';
+import { OrdersListComponent }   from './components/orders-list.component';
 
 const routes: Routes = [
 	{ path: 'register',    component: RegisterUserComponent },
 	{ path: 'items-list',  component: ItemsListComponent },
 	{ path: 'cart-list',   component: CartListComponent },
+	{ path: 'orders-list', component: OrdersListComponent },
 	{ path: '', redirectTo: '/register', pathMatch: 'full'}
 ];
 

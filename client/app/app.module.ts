@@ -9,6 +9,7 @@ import { EventEmitterService }   from './services/event-emitter.service';
 import { AuthenticationService } from './services/authentication.service';
 import { ItemsService }          from './services/items.service';
 import { CartService }           from './services/cart.service';
+import { OrdersService }         from './services/orders.service';
 
 import { AppComponent }          from './app.component';
 import { NavbarComponent }       from './components/navbar.component';
@@ -17,6 +18,7 @@ import { RegisterUserComponent } from './components/register-user.component';
 import { ItemsListComponent}     from './components/items-list.component';
 import { PricesComponent }       from './components/prices-component';
 import { CartListComponent }     from './components/cart-list.component';
+import { OrdersListComponent }   from './components/orders-list.component';
 
 @NgModule({
 	imports: [
@@ -32,13 +34,15 @@ import { CartListComponent }     from './components/cart-list.component';
 		RegisterUserComponent,
 		ItemsListComponent,
 		PricesComponent,
-		CartListComponent
+		CartListComponent,
+		OrdersListComponent
 	],
 	providers: [
 		EventEmitterService,
 		AuthenticationService,
 		ItemsService,
-		CartService
+		CartService,
+		OrdersService
 	],
 	bootstrap: [
 		AppComponent

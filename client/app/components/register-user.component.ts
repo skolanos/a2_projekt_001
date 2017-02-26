@@ -62,6 +62,7 @@ export class RegisterUserComponent {
 						if (data.status === 200) {
 							//this.authenticationService.setUserToken(data.data[0].token);
 							this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
+							this.eventEmitterService.confirmUsersOrdersChanged({ event: 'refresh' });
 							this.router.navigate(['/items-list']);
 						}
 						else {

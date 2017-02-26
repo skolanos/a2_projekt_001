@@ -8,6 +8,7 @@ const Categories = require('./data-model-categories');
 const Items = require('./data-model-items');
 const Prices = require('./data-model-prices');
 const Cart = require('./data-model-cart');
+const Orders = require('./data-model-orders');
 
 module.exports.BO = {
 	/**
@@ -382,5 +383,107 @@ module.exports.BO = {
 				});
 			}
 		});
-	}
+	},
+	registerNewOrder: (dataObj, callback) => {
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined)
+			}
+			else {
+				client.query('BEGIN', (err) => {
+					if (err) {
+						client.query('ROLLBACK', (err) => {
+							done(err);
+							callback(err, undefined);
+						});
+					}
+					else {
+						Orders.save({ userId: dataObj.userId }, { client: client }, (err, value) => {
+							if (err) {
+								client.query('ROLLBACK', (err) => {
+									done(err);
+									callback(err, undefined);
+								});
+							}
+							else {
+								let zam_id = value[0].id;
+								Orders.copyItemsFromCart({ userId: dataObj.userId, orderId: zam_id }, { client: client }, (err, value) => {
+									if (err) {
+										client.query('ROLLBACK', (err) => {
+											done(err);
+											callback(err, undefined);
+										});
+									}
+									else {
+										Cart.deleteAll({ userId: dataObj.userId }, { client: client }, (err, value) => {
+											if (err) {
+												client.query('ROLLBACK', (err) => {
+													done(err);
+													callback(err, undefined);
+												});
+											}
+											else {
+												client.query('COMMIT', (err, result) => {
+													if (err) {
+														done(err);
+														callback(err, undefined);
+													}
+													else {
+														done();
+														callback(undefined, { status: 0, message: 'Zarejestrowano nowe zamówienie.', data: [] });
+													}
+												});
+											}
+										});
+									}
+								});
+							}
+						});
+					}
+				});
+			}
+		});
+	},
+	getNumberOfOrders: (dataObj, callback) => {
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined)
+			}
+			else {
+				Orders.getRowsCount({ userId: dataObj.userId }, { client: client}, (err, value) => {
+					if (err) {
+						done(err);
+						callback(err, undefined)
+					}
+					else {
+						done();
+						callback(undefined, { status: 0, message: '', data: value });
+					}
+				});
+			}
+		});
+	},
+	getNumberOfActiveOrders: (dataObj, callback) => {
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined)
+			}
+			else {
+				let status_zarejestrowane = 1;
+				Orders.getRowsCount({ userId: dataObj.userId, status: status_zarejestrowane }, { client: client}, (err, value) => {
+					if (err) {
+						done(err);
+						callback(err, undefined)
+					}
+					else {
+						done();
+						callback(undefined, { status: 0, message: '', data: value });
+					}
+				});
+			}
+		});
+	},
 };

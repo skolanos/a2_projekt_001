@@ -45,4 +45,12 @@ export class CartService {
 			})
 		}).map((response: Response) => response.json());
 	}
+	registerOrder(): Observable<any> {
+		return this.http.post('/api/orders-register-new', '', {
+			headers: new Headers({
+				'Content-Type': 'application/json',
+				'x-accss-token': this.authenticationService.getUserToken()
+			})
+		}).map((response: Response) => response.json());
+	}
 }

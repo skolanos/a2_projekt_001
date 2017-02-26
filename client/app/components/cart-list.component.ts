@@ -20,6 +20,7 @@ export class CartListComponent implements OnInit {
 	private selectedItem: any;
 	private showDeleteItemConfirm: boolean;
 	private showDeleteAllConfirm: boolean;
+	private showSummary: boolean;
 
 	constructor(
 		private eventEmitterService: EventEmitterService,
@@ -33,6 +34,7 @@ export class CartListComponent implements OnInit {
 		this.selectedItem = undefined;
 		this.showDeleteItemConfirm = false;
 		this.showDeleteAllConfirm = false;
+		this.showSummary = false;
 	}
 	ngOnInit(): void {
 		this.getItemsList();
@@ -109,7 +111,22 @@ export class CartListComponent implements OnInit {
 	registerOrder(): void {
 		this.showDeleteAllConfirm = false;
 		this.showDeleteItemConfirm = false;
-		alert('TODO:'); // TODO:
+
+		this.processing = true;
+		this.cartService.registerOrder().subscribe((value: any) => {
+			if (value.status === 200) {
+				this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
+				this.eventEmitterService.confirmUsersOrdersChanged({ event: 'refresh' });
+				this.showSummary = true;
+			}
+			else {
+				this.messages.push(value.message);
+			}
+		}, error => {
+			this.processing = false;
+			console.log('CartListComponent.deleteItemYes() error:', error);
+			this.messages.push(error);
+		});
 	}
 	deleteAllItems(): void {
 		this.showDeleteAllConfirm = true;
@@ -117,6 +134,7 @@ export class CartListComponent implements OnInit {
 	}
 	deleteAllYes(): void {
 		this.showDeleteAllConfirm = false;
+
 		this.processing = true;
 		this.cartService.deleteAll().subscribe((value: any) => {
 			if (value.status === 200) {
@@ -145,6 +163,7 @@ export class CartListComponent implements OnInit {
 	}
 	deleteItemYes(): void {
 		this.showDeleteItemConfirm = false;
+
 		this.processing = true;
 		this.cartService.deleteItem(this.selectedItem.ko_id).subscribe((value: any) => {
 			if (value.status === 200) {

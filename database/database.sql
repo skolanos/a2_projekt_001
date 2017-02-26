@@ -43,3 +43,29 @@ CREATE TABLE koszyk (
 );
 CREATE INDEX koszyk_idx_001 ON koszyk(ko_uz_id);
 CREATE INDEX koszyk_idx_002 ON koszyk(ko_c_id);
+
+CREATE TABLE zamowienia_statusy (
+	zas_id    serial NOT NULL,
+	zas_nazwa varchar(50),
+	PRIMARY KEY (zas_id)
+);
+
+CREATE TABLE zamowienia (
+	zam_id     serial NOT NULL,
+	zam_uz_id  integer REFERENCES uzytkownicy,
+	zam_dpowst timestamp DEFAULT current_timestamp,
+	zam_zas_id integer REFERENCES zamowienia_statusy,
+	PRIMARY KEY (zam_id)
+);
+CREATE INDEX zamowienia_idx_001 ON zamowienia(zam_uz_id);
+CREATE INDEX zamowienia_idx_002 ON zamowienia(zam_zas_id);
+
+CREATE TABLE zamowienia_pozycje (
+	zap_id     serial NOT NULL,
+	zap_zam_id integer REFERENCES zamowienia,
+	zap_c_id   integer REFERENCES ceny,
+	zap_ile    numeric,
+	PRIMARY KEY (zap_id)
+);
+CREATE INDEX zamowienia_pozycje_idx_001 ON zamowienia_pozycje(zap_zam_id);
+CREATE INDEX zamowienia_pozycje_idx_002 ON zamowienia_pozycje(zap_c_id);

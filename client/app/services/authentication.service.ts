@@ -30,7 +30,6 @@ export class AuthenticationService {
 			let value = response.json();
 			if (value.status === 200) {
 				this.setUserToken(value.data[0].token);
-				console.log('Ustawiono token użytkownika w AuthenticationService.login()');
 			}
 
 			return value;
