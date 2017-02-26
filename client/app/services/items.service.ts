@@ -56,12 +56,4 @@ export class ItemsService {
 			})
 		}).map((response: Response) => response.json());
 	}
-	getCartNumberOfItems(): Observable<any> {
-		return this.http.post('/api/cart-number-of-items', '', {
-			headers: new Headers({
-				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
-			})
-		}).map((response: Response) => response.json());
-	}
 }

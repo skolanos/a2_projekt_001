@@ -20,3 +20,24 @@ module.exports.cartItemsList = (req, res) => {
 		}
 	});
 };
+module.exports.cartDeleteItem = (req, res) => {
+	dataModel.BO.deleteItemFromCart({ userId: req.decoded.uz_id, cartId: req.body.cartId }, (err, value) => {
+		if (err) {
+			res.json({ status: 400, message: err, data: [] });
+		}
+		else {
+			res.json({ status: 200, message: '', data: value.data });
+		}
+	});
+};
+module.exports.cartDeleteAllItems = (req, res) => {
+	dataModel.BO.deleteAllItemsFromCart({ userId: req.decoded.uz_id }, (err, value) => {
+		if (err) {
+			res.json({ status: 400, message: err, data: [] });
+		}
+		else {
+			res.json({ status: 200, message: '', data: value.data });
+		}
+	});
+};
+

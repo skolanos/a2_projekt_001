@@ -98,5 +98,31 @@ module.exports = {
 				callback(undefined, [{ ko_id: dataObj.cartId }]);
 			}
 		});
+	},
+	deleteItem: (dataObj, dbConnObj, callback) => {
+		let client = dbConnObj.client;
+		client.query(`
+			DELETE FROM koszyk WHERE (ko_id=$1) AND (ko_uz_id=$2)
+		`, [dataObj.cartId, dataObj.userId], (err) => {
+			if (err) {
+				callback(err, undefined);
+			}
+			else {
+				callback(undefined, []);
+			}
+		});
+	},
+	deleteAll: (dataObj, dbConnObj, callback) => {
+		let client = dbConnObj.client;
+		client.query(`
+			DELETE FROM koszyk WHERE (ko_uz_id=$1)
+		`, [dataObj.userId], (err) => {
+			if (err) {
+				callback(err, undefined);
+			}
+			else {
+				callback(undefined, []);
+			}
+		});
 	}
 };

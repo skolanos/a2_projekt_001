@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { EventEmitterService } from '../services/event-emitter.service';
 import { AuthenticationService } from '../services/authentication.service';
-import { ItemsService } from '../services/items.service';
+import { CartService } from '../services/cart.service';
 
 @Component({
 	moduleId: module.id,
@@ -17,7 +17,7 @@ export class NavbarComponent implements OnDestroy {
 	constructor(
 		private eventEmitterService: EventEmitterService,
 		private authenticationService: AuthenticationService,
-		private itemsService: ItemsService
+		private cartService: CartService
 	) {
 		this.cartNumItems = 0;
 
@@ -29,7 +29,7 @@ export class NavbarComponent implements OnDestroy {
 		this.subscription.unsubscribe();
 	}
 	getCartNumberOfItems(): void {
-		this.itemsService.getCartNumberOfItems().subscribe((value: any) => {
+		this.cartService.getNumberOfItems().subscribe((value: any) => {
 			if (value.status === 200) {
 				this.cartNumItems = parseInt(value.data[0].rowsCount, 10);
 			}

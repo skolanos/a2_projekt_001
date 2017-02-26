@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
+import { EventEmitterService } from '../services/event-emitter.service';
 import { CartService } from '../services/cart.service';
 
 declare var BigDecimal: any;
@@ -16,13 +18,21 @@ export class CartListComponent implements OnInit {
 	private items: any[];
 	private totalValue: string;
 	private selectedItem: any;
+	private showDeleteItemConfirm: boolean;
+	private showDeleteAllConfirm: boolean;
 
-	constructor(private cartService: CartService) {
+	constructor(
+		private eventEmitterService: EventEmitterService,
+		private cartService: CartService,
+		private router: Router
+	) {
 		this.processing = false;
 		this.messages = [];
 		this.items = [];
 		this.totalValue = '0.00';
 		this.selectedItem = undefined;
+		this.showDeleteItemConfirm = false;
+		this.showDeleteAllConfirm = false;
 	}
 	ngOnInit(): void {
 		this.getItemsList();
@@ -46,6 +56,9 @@ export class CartListComponent implements OnInit {
 	}
 	selectItemClick(item: any): void {
 		this.selectedItem = item;
+
+		this.showDeleteAllConfirm = false;
+		this.showDeleteItemConfirm = false;
 	}
 	private isValidInt(value: string): boolean {
 		let res: RegExpMatchArray = undefined;
@@ -94,12 +107,81 @@ export class CartListComponent implements OnInit {
 		}
 	}
 	registerOrder(): void {
+		this.showDeleteAllConfirm = false;
+		this.showDeleteItemConfirm = false;
 		alert('TODO:'); // TODO:
 	}
 	deleteAllItems(): void {
-		alert('TODO:'); // TODO:
+		this.showDeleteAllConfirm = true;
+		this.showDeleteItemConfirm = false;
+	}
+	deleteAllYes(): void {
+		this.showDeleteAllConfirm = false;
+		this.processing = true;
+		this.cartService.deleteAll().subscribe((value: any) => {
+			if (value.status === 200) {
+				this.selectedItem = undefined;
+				this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
+				// koszyk jest pusty, automatyczne przejście do oferty
+				this.router.navigate(['/items-list']);
+			}
+			else {
+				this.messages.push(value.message);
+			}
+		}, error => {
+			this.processing = false;
+			console.log('CartListComponent.deleteItemYes() error:', error);
+			this.messages.push(error);
+		});
+	}
+	deleteAllNo(): void {
+		this.showDeleteAllConfirm = false;
 	}
 	deleteItem(): void {
-		alert('TODO:'); // TODO:
+		if (this.selectedItem) {
+			this.showDeleteAllConfirm = false;
+			this.showDeleteItemConfirm = true;
+		}
+	}
+	deleteItemYes(): void {
+		this.showDeleteItemConfirm = false;
+		this.processing = true;
+		this.cartService.deleteItem(this.selectedItem.ko_id).subscribe((value: any) => {
+			if (value.status === 200) {
+				this.selectedItem = undefined;
+				this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
+				this.cartService.getNumberOfItems().subscribe((value: any) => {
+					if (value.status === 200) {
+						this.processing = false;
+						let cartNumItems: number = parseInt(value.data[0].rowsCount, 10);
+						if (cartNumItems === 0 ) {
+							// koszyk jest pusty, automatyczne przejście do oferty
+							this.router.navigate(['/items-list']);
+						}
+						else {
+							this.getItemsList();
+						}
+					}
+					else {
+						this.processing = false;
+						console.log('CartListComponent.deleteItemYes():', value);
+					}
+				}, error => {
+					this.processing = false;
+					console.log('CartListComponent.deleteItemYes() error:', error);
+					this.messages.push(error);
+				});
+			}
+			else {
+				this.messages.push(value.message);
+			}
+		}, error => {
+			this.processing = false;
+			console.log('CartListComponent.deleteItemYes() error:', error);
+			this.messages.push(error);
+		});
+	}
+	deleteItemNo(): void {
+		this.showDeleteItemConfirm = false;
 	}
 }

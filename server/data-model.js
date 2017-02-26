@@ -342,5 +342,45 @@ module.exports.BO = {
 				});
 			}
 		});
+	},
+	deleteItemFromCart: (dataObj, callback) => {
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined)
+			}
+			else {
+				Cart.deleteItem({ userId: dataObj.userId, cartId: dataObj.cartId }, { client: client }, (err, value) => {
+					if (err) {
+						done(err);
+						callback(err, undefined)
+					}
+					else {
+						done();
+						callback(undefined, { status: 0, message: '', data: value });
+					}
+				});
+			}
+		});
+	},
+	deleteAllItemsFromCart: (dataObj, callback) => {
+		pg.connect(serverConfig.database.connectionString, (err, client, done) => {
+			if (err) {
+				done(err);
+				callback(err, undefined)
+			}
+			else {
+				Cart.deleteAll({ userId: dataObj.userId }, { client: client }, (err, value) => {
+					if (err) {
+						done(err);
+						callback(err, undefined)
+					}
+					else {
+						done();
+						callback(undefined, { status: 0, message: '', data: value });
+					}
+				});
+			}
+		});
 	}
 };

@@ -28,11 +28,27 @@
 				</tr>
 			</tbody>
 		</table>
-		<div>
+		<div style="text-align: right; padding-bottom: 0.5rem">
 			<strong>Wartość produktów: {{totalValue}} PLN</strong>
 		</div>
-		<button type="button" class="btn btn-danger" (click)="deleteItem()" [disabled]="processing">Usuń pozycję</button>
-		<button type="button" class="btn btn-danger" (click)="deleteAllItems()" [disabled]="processing">Wyczyść koszyk</button>
-		<button type="button" class="btn btn-primary" (click)="registerOrder()" [disabled]="processing">Zrealizuj zamówienie</button>
+		<div class="alert alert-danger" *ngIf="showDeleteItemConfirm">
+			<div>Czy na pewno usunąć <strong>"{{selectedItem.t_nazwa}}"</strong> z koszyka?</div>
+			<div style="padding: 0.5rem 20rem">
+				<button type="button" class="btn btn-danger" (click)="deleteItemYes()" [disabled]="processing">Tak</button>
+				<button type="button" class="btn btn-danger" (click)="deleteItemNo()" [disabled]="processing" style="float: right">Nie</button>
+			</div>
+		</div>
+		<div class="alert alert-danger" *ngIf="showDeleteAllConfirm">
+			<div>Czy na pewno usunąć całą zawartość z koszyka?</div>
+			<div style="padding: 0.5rem 20rem">
+				<button type="button" class="btn btn-danger" (click)="deleteAllYes()" [disabled]="processing">Tak</button>
+				<button type="button" class="btn btn-danger" (click)="deleteAllNo()" [disabled]="processing" style="float: right">Nie</button>
+			</div>
+		</div>
+		<div style="padding-top: 0.5rem">
+			<button type="button" class="btn btn-danger" (click)="deleteItem()" [disabled]="processing || !selectedItem">Usuń pozycję</button>
+			<button type="button" class="btn btn-danger" (click)="deleteAllItems()" [disabled]="processing || items.length === 0">Wyczyść koszyk</button>
+			<button type="button" class="btn btn-primary" (click)="registerOrder()" [disabled]="processing || items.length === 0" style="float: right">Złóż zamówienie</button>
+		</div>
 	</form>
 </div>
