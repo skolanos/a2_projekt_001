@@ -6,7 +6,7 @@
 			<li *ngFor="let message of messages">{{message}}</li>
 		</ul>
 	</div>
-	<form name="form" novalidate *ngIf="items > 0 && !showSummary">
+	<form name="form" novalidate *ngIf="items.length > 0 && !showSummary">
 		<table class="table table-striped table-bordered table-hover table-sm">
 			<thead class="bg-faded">
 				<tr>

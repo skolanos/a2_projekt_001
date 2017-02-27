@@ -3,7 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './routing/app-routing.module';
+import { CartListGuard }    from './routing/cart-list.guard';
+import { OrdersListGuard }  from './routing/orders-list.guard';
 
 import { EventEmitterService }   from './services/event-emitter.service';
 import { AuthenticationService } from './services/authentication.service';
@@ -38,6 +40,8 @@ import { OrdersListComponent }   from './components/orders-list.component';
 		OrdersListComponent
 	],
 	providers: [
+		CartListGuard,
+		OrdersListGuard,
 		EventEmitterService,
 		AuthenticationService,
 		ItemsService,

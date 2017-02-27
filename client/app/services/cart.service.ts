@@ -6,17 +6,31 @@ import { AuthenticationService } from './authentication.service';
 
 @Injectable()
 export class CartService {
+	private numberOfItems: number;
+
 	constructor(
 		private http: Http,
 		private authenticationService: AuthenticationService
-	) {}
+	) {
+		this.numberOfItems = 0;
+	}
+	getCount(): number {
+		return this.numberOfItems;
+	}
 	getNumberOfItems(): Observable<any> {
 		return this.http.post('/api/cart-number-of-items', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
 				'x-accss-token': this.authenticationService.getUserToken()
 			})
-		}).map((response: Response) => response.json());
+		}).map((response: Response) => {
+			let value = response.json();
+			if (value.status === 200) {
+				this.numberOfItems = parseInt(value.data[0].rowsCount, 10);
+			}
+
+			return value;
+		});
 	}
 	getItemsList(): Observable<any> {
 		return this.http.post('/api/cart-items-list', JSON.stringify({
