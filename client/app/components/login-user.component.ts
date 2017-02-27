@@ -69,7 +69,7 @@ export class LoginUserComponent {
 		this.authenticationService.logout().subscribe((value: any) => {
 			this.processing = false;
 			if (value.status === 200) {
-				this.authenticationService.setUserToken('');
+				// this.authenticationService.setUserToken('');
 				this.password = '';
 				this.router.navigate(['/register']);
 			}

@@ -26,7 +26,7 @@ module.exports.BO = {
 			else {
 				client.query('BEGIN', (err) => {
 					if (err) {
-						client.query('ROLLBACK', (err) => {
+						client.query('ROLLBACK', (error) => {
 							done(err);
 							callback(err, undefined);
 						});
@@ -35,7 +35,7 @@ module.exports.BO = {
 						// szukamy użytkownika o podanym adresie email
 						Users.findByEmail({ email: dataObj.email }, { client: client }, (err, value) => {
 							if (err) {
-								client.query('ROLLBACK', (err) => {
+								client.query('ROLLBACK', (error) => {
 									done(err);
 									callback(err, undefined);
 								});
@@ -45,7 +45,7 @@ module.exports.BO = {
 									// nie znaleźliśmy użytkownika więc go dopisujemy
 									Users.save({ firstName: dataObj.firstName, surname: dataObj.surname, email: dataObj.email, password: dataObj.password }, { client: client }, (err, value) => {
 										if (err) {
-											client.query('ROLLBACK', (err) => {
+											client.query('ROLLBACK', (error) => {
 												done(err);
 												callback(err, undefined);
 											});
@@ -66,7 +66,7 @@ module.exports.BO = {
 								}
 								else {
 									// znaleźliśmy użytkownika - błąd nie można dopisać kolejnego o takim samym adresie email
-									client.query('ROLLBACK', (err) => {
+									client.query('ROLLBACK', (error) => {
 										if (err) {
 											done(err);
 											callback(err, undefined);
@@ -209,7 +209,7 @@ module.exports.BO = {
 			else {
 				client.query('BEGIN', (err) => {
 					if (err) {
-						client.query('ROLLBACK', (err) => {
+						client.query('ROLLBACK', (error) => {
 							done(err);
 							callback(err, undefined);
 						});
@@ -217,7 +217,7 @@ module.exports.BO = {
 					else {
 						Prices.findById({ id: dataObj.priceId }, { client: client }, (err, value) => {
 							if (err) {
-								client.query('ROLLBACK', (err) => {
+								client.query('ROLLBACK', (error) => {
 									done(err);
 									callback(err, undefined);
 								});
@@ -227,7 +227,7 @@ module.exports.BO = {
 									// sprawdzenie czy towar o danej cenie jest już w koszyku użytkownika
 									Cart.findByUserIdPriceId({ userId: dataObj.userId, priceId: dataObj.priceId }, { client: client }, (err, value) => {
 										if (err) {
-											client.query('ROLLBACK', (err) => {
+											client.query('ROLLBACK', (error) => {
 												done(err);
 												callback(err, undefined);
 											});
@@ -237,7 +237,7 @@ module.exports.BO = {
 												// towaru o danej cenie nie było jeszcze w koszyku użytkownika
 												Cart.save({ userId: dataObj.userId, priceId: dataObj.priceId, amount: dataObj.amount }, { client: client }, (err, value) => {
 													if (err) {
-														client.query('ROLLBACK', (err) => {
+														client.query('ROLLBACK', (error) => {
 															done(err);
 															callback(err, undefined);
 														});
@@ -260,7 +260,7 @@ module.exports.BO = {
 												// towar o danej cenie jest już w koszyku użytkownika
 												Cart.update({ cartId: value[0].ko_id, amount: parseInt(value[0].ko_ile, 10) + parseInt(dataObj.amount, 10) }, { client: client }, (err, value) => {
 													if (err) {
-														client.query('ROLLBACK', (err) => {
+														client.query('ROLLBACK', (error) => {
 															done(err);
 															callback(err, undefined);
 														});
@@ -283,7 +283,7 @@ module.exports.BO = {
 									});
 								}
 								else {
-									client.query('ROLLBACK', (err) => {
+									client.query('ROLLBACK', (error) => {
 										if (err) {
 											done(err);
 											callback(err, undefined);
@@ -393,7 +393,7 @@ module.exports.BO = {
 			else {
 				client.query('BEGIN', (err) => {
 					if (err) {
-						client.query('ROLLBACK', (err) => {
+						client.query('ROLLBACK', (error) => {
 							done(err);
 							callback(err, undefined);
 						});
@@ -401,7 +401,7 @@ module.exports.BO = {
 					else {
 						Orders.save({ userId: dataObj.userId }, { client: client }, (err, value) => {
 							if (err) {
-								client.query('ROLLBACK', (err) => {
+								client.query('ROLLBACK', (error) => {
 									done(err);
 									callback(err, undefined);
 								});
@@ -410,7 +410,7 @@ module.exports.BO = {
 								let zam_id = value[0].id;
 								Orders.copyItemsFromCart({ userId: dataObj.userId, orderId: zam_id }, { client: client }, (err, value) => {
 									if (err) {
-										client.query('ROLLBACK', (err) => {
+										client.query('ROLLBACK', (error) => {
 											done(err);
 											callback(err, undefined);
 										});
@@ -418,7 +418,7 @@ module.exports.BO = {
 									else {
 										Cart.deleteAll({ userId: dataObj.userId }, { client: client }, (err, value) => {
 											if (err) {
-												client.query('ROLLBACK', (err) => {
+												client.query('ROLLBACK', (error) => {
 													done(err);
 													callback(err, undefined);
 												});

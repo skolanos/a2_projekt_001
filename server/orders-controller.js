@@ -3,7 +3,7 @@ const dataModel = require('./data-model');
 module.exports.orderRegisterNew = (req, res) => {
 	dataModel.BO.registerNewOrder({ userId: req.decoded.uz_id }, (err, value) => {
 		if (err) {
-			res.json({ status: 400, message: err, data: [] });
+			res.json({ status: 400, message: err.detail, data: [] });
 		}
 		else {
 			res.json({ status: 200, message: '', data: [] });

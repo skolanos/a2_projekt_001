@@ -30,6 +30,7 @@ export class AuthenticationService {
 			let value = response.json();
 			if (value.status === 200) {
 				this.setUserToken(value.data[0].token);
+				localStorage.setItem('userToken', this.userToken);
 			}
 
 			return value;
@@ -43,7 +44,31 @@ export class AuthenticationService {
 				'Content-Type': 'application/json',
 				'x-accss-token': this.getUserToken()
 			})
-		}).map((response: Response) => response.json());
+		}).map((response: Response) => {
+			let value = response.json();
+			if (value.status === 200) {
+				this.setUserToken('');
+				localStorage.removeItem('userToken');
+			}
+
+			return value;
+		});
+	}
+	loginByToken(userToken: string): Observable<any> {
+		return this.http.post('/api/user-login-by-token', '', {
+			headers: new Headers({
+				'Content-Type': 'application/json',
+				'x-accss-token': userToken
+			})
+		}).map((response: Response) => {
+			let value = response.json();
+			if (value.status === 200) {
+				this.setUserToken(value.data[0].token);
+				localStorage.setItem('userToken', this.userToken);
+			}
+
+			return value;
+		});
 	}
 	setUserToken(userToken: string): void {
 		this.userToken = userToken;

@@ -114,6 +114,7 @@ export class CartListComponent implements OnInit {
 
 		this.processing = true;
 		this.cartService.registerOrder().subscribe((value: any) => {
+			this.processing = false;
 			if (value.status === 200) {
 				this.eventEmitterService.confirmUsersCartChanged({ event: 'refresh' });
 				this.eventEmitterService.confirmUsersOrdersChanged({ event: 'refresh' });
@@ -121,6 +122,7 @@ export class CartListComponent implements OnInit {
 			}
 			else {
 				this.messages.push(value.message);
+				console.log('CartListComponent.deleteItemYes():', value);
 			}
 		}, error => {
 			this.processing = false;

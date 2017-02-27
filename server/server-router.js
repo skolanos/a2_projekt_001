@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post('/user-register',         authenticationController.register);
 router.post('/user-login',            authenticationController.login);
+router.post('/user-login-by-token',   authenticationController.loginByToken);
 router.post('/user-logout',           authenticationController.logout);
 router.post('/categories-list',       authenticationController.authenticateRequest, itemsController.categoriesList);
 router.post('/items-list',            authenticationController.authenticateRequest, itemsController.itemsList);
