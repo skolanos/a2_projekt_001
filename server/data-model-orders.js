@@ -19,6 +19,18 @@ module.exports = {
 			callback(undefined, results);
 		});
 	},
+	findAll: (dataObj, dbConnObj, callback) => {
+		let client = dbConnObj.client;
+		let results = [];
+
+		let query = client.query('SELECT * FROM zamowienia LEFT JOIN zamowienia_statusy ON (zam_zas_id=zas_id) WHERE (zam_uz_id=$1)', [dataObj.userId]);
+		query.on('row', (row) => {
+			results.push(row);
+		});
+		query.on('end', () => {
+			callback(undefined, results);
+		});
+	},
 	save: (dataObj, dbConnObj, callback) => {
 		let client = dbConnObj.client;
 		let results = [];

@@ -22,5 +22,6 @@ router.post('/cart-delete-all-items', authenticationController.authenticateReque
 router.post('/orders-register-new',   authenticationController.authenticateRequest, ordersController.orderRegisterNew);
 router.post('/orders-number-of-orders', authenticationController.authenticateRequest, ordersController.ordersNumberOfOrders);
 router.post('/orders-number-of-active-orders', authenticationController.authenticateRequest, ordersController.ordersNumberOfActiveOrders);
+router.post('/orders-list',           authenticationController.authenticateRequest, ordersController.ordersList);
 
 module.exports = router;

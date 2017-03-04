@@ -30,3 +30,13 @@ module.exports.ordersNumberOfActiveOrders = (req, res) => {
 		}
 	});
 };
+module.exports.ordersList = (req, res) => {
+	dataModel.BO.getOrdersList({ userId: req.decoded.uz_id }, (err, value) => {
+		if (err) {
+			res.json({ status: 400, message: err, data: [] });
+		}
+		else {
+			res.json({ status: 200, message: '', data: value.data });
+		}
+	});
+};

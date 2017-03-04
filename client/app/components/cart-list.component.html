@@ -22,7 +22,7 @@
 					<td>{{item.kat_nazwa}}</td>
 					<td>{{item.t_nazwa}}</td>
 					<td>{{item.c_cena}}</td>
-					<td><input type="number" min="1" pattern="^[-+]?\d+$" [ngModelOptions]="{standalone: true}" [(ngModel)]="items[i].ko_ile" class="form-control mr-sm-2" placeholder="Ilość" (keyup)="amountChange(item)" (change)="amountChange(item)" style="text-align: right" required></td>
+					<td><input type="number" min="1" pattern="^[-+]?\d+$" [ngModelOptions]="{standalone: true}" [(ngModel)]="items[i].ko_ile" class="form-control mr-sm-2" readonly="readonly" placeholder="Ilość" (keyup)="amountChange(item)" (change)="amountChange(item)" style="text-align: right" required></td>
 					<td>{{item.c_jednostka}}</td>
 					<td>{{item.wartosc}}</td>
 				</tr>

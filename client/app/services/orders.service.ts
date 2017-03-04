@@ -40,4 +40,12 @@ export class OrdersService {
 			})
 		}).map((response: Response) => response.json());
 	}
+	getItemsList(): Observable<any> {
+		return this.http.post('/api/orders-list', '', {
+			headers: new Headers({
+				'Content-Type': 'application/json',
+				'x-accss-token': this.authenticationService.getUserToken()
+			})
+		}).map((response: Response) => response.json());
+	}
 }

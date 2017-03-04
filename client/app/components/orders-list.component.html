@@ -1,3 +1,25 @@
 <div class="container">
-	<h1>Lista zamówień</h1>
+	<h1 class="page-header">Lista zamówień</h1>
+	<div class="alert alert-danger" *ngIf="messages.length > 0">
+		<strong>Informacje:</strong><br>
+		<ul>
+			<li *ngFor="let message of messages">{{message}}</li>
+		</ul>
+	</div>
+	<table class="table table-striped table-bordered table-hover table-sm">
+		<thead class="bg-faded">
+			<tr>
+				<th>Data złożenia zamówienia</th>
+				<th>Wartość</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let order of orders" [class.table-info]="selectedOrder && order.zam_id === selectedOrder.zam_id" (click)="selectOrderClick(order)">
+				<td>{{order.zam_dpowst | date:'y-MM-dd HH:mm'}}</td>
+				<td>???</td>
+				<td>{{order.zas_nazwa}}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
