@@ -17,7 +17,7 @@
 		<tbody>
 			<tr *ngFor="let order of orders" [class.table-info]="selectedOrder && order.zam_id === selectedOrder.zam_id" (click)="selectOrderClick(order)">
 				<td>{{order.zam_dpowst | date:'y-MM-dd HH:mm'}}</td>
-				<td>???</td>
+				<td>{{order.wartosc}}</td>
 				<td>{{order.zas_nazwa}}</td>
 			</tr>
 		</tbody>

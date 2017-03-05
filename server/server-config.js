@@ -6,7 +6,7 @@ module.exports = {
 		wwwRoot: path.join(__dirname, '../client')
 	},
 	database: {
-		connectionString: process.env.DATABASE_URL || 'pg://postgres:postgres@localhost:5432/gabinet?stringtype=unspecified'
+		connectionString: process.env.DATABASE_URL || 'pg://postgres:postgres@localhost:5432/zamawiaczek?stringtype=unspecified'
 	},
 	jsonwebtoken: {
 		secret: 'ty4387th4387th'

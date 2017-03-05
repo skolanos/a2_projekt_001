@@ -23,7 +23,16 @@ module.exports = {
 		let client = dbConnObj.client;
 		let results = [];
 
-		let query = client.query('SELECT * FROM zamowienia LEFT JOIN zamowienia_statusy ON (zam_zas_id=zas_id) WHERE (zam_uz_id=$1)', [dataObj.userId]);
+		let query = client.query(`
+			SELECT zam_id, zam_dpowst, SUM(ROUND(zap_ile * c_cena, 2)) AS wartosc, zas_nazwa
+			FROM zamowienia
+			JOIN zamowienia_pozycje ON (zap_zam_id=zam_id)
+			JOIN ceny ON (zap_c_id=c_id)
+			JOIN zamowienia_statusy ON (zam_zas_id=zas_id)
+			WHERE (zam_uz_id=$1)
+			GROUP BY zam_id, zam_dpowst, zas_nazwa
+			ORDER BY zam_dpowst, zam_id
+		`, [dataObj.userId]);
 		query.on('row', (row) => {
 			results.push(row);
 		});
