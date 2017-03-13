@@ -21,7 +21,7 @@ export class CartService {
 		return this.http.post('/api/cart-number-of-items', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => {
 			let value = response.json();
@@ -37,7 +37,7 @@ export class CartService {
 		}), {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}
@@ -47,7 +47,7 @@ export class CartService {
 		}), {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}
@@ -55,7 +55,7 @@ export class CartService {
 		return this.http.post('/api/cart-delete-all-items', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}
@@ -63,7 +63,7 @@ export class CartService {
 		return this.http.post('/api/orders-register-new', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}

@@ -42,7 +42,7 @@ export class AuthenticationService {
 		}), {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.getUserToken()
+				'x-access-token': this.getUserToken()
 			})
 		}).map((response: Response) => {
 			let value = response.json();
@@ -58,7 +58,7 @@ export class AuthenticationService {
 		return this.http.post('/api/user-login-by-token', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': userToken
+				'x-access-token': userToken
 			})
 		}).map((response: Response) => {
 			let value = response.json();

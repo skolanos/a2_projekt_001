@@ -11,7 +11,7 @@ const dataModel = require('./data-model');
  * @param next {function}
  */
 module.exports.authenticateRequest = (req, res, next) => {
-	var token = req.headers['x-accss-token'] || req.body.token || req.query.token;
+	var token = req.headers['x-access-token'] || req.body.token || req.query.token;
 
 	if (token) {
 		jwt.verify(token, serverConfig.jsonwebtoken.secret, (err, decoded) => {
@@ -130,7 +130,7 @@ module.exports.login = (req, res) => {
 	}
 };
 module.exports.loginByToken = (req, res) => {
-	var token = req.headers['x-accss-token'] || req.body.token || req.query.token;
+	var token = req.headers['x-access-token'] || req.body.token || req.query.token;
 
 	if (token) {
 		jwt.verify(token, serverConfig.jsonwebtoken.secret, (err, decoded) => {

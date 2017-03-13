@@ -15,7 +15,7 @@ export class ItemsService {
 		return this.http.post('/api/categories-list', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}
@@ -30,7 +30,7 @@ export class ItemsService {
 		}), {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}
@@ -40,7 +40,7 @@ export class ItemsService {
 		}), {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}
@@ -52,7 +52,7 @@ export class ItemsService {
 		}), {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}

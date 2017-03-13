@@ -21,7 +21,7 @@ export class OrdersService {
 		return this.http.post('/api/orders-number-of-orders', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => {
 			let value = response.json();
@@ -36,7 +36,7 @@ export class OrdersService {
 		return this.http.post('/api/orders-number-of-active-orders', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}
@@ -44,7 +44,7 @@ export class OrdersService {
 		return this.http.post('/api/orders-list', '', {
 			headers: new Headers({
 				'Content-Type': 'application/json',
-				'x-accss-token': this.authenticationService.getUserToken()
+				'x-access-token': this.authenticationService.getUserToken()
 			})
 		}).map((response: Response) => response.json());
 	}
