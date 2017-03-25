@@ -1,23 +1,37 @@
 # angular2_simple_ordering_app
 
-Serwer w Node.js z wykorzystaniem Express do weryfikacji połączenia wykorzystuje
-JsonWebTokens. Jako baza danych wykorzystywana jest baza PostgreSQL. Po stronie
-klienta aplikacja w Angular umożliwia rejestrowanie użytkowników i przeglądania
-prostej listy z ofertą, umieszczanie produktów w koszyku i rejestrowanie zamówień.
+Angular simple browse inventory and ordering application. Server side in Node.js
+(Java Script) uses Expess and store data in PostgreSQL database.
 
-## Konfiguracja bazy danych i utworzenie tabel
+You can login into application or register a new account. Once you are logged in
+you can browse inventory and put selected items into your cart. You can review
+what you have selected, make modifications (delete items from cart) and place
+orders.
 
-Należy utworzyć nową bazę danych w PostgreSQL. Następnie wykonać polecenia zakładające
-tabele i indeksy z pliku `/database/database.sql`. Po utworzeniu tabel można
-zasilić je przykładowymi danymi z pliku `/database/sample_data.sql`.
+## Using components
 
-W celu określenia adresu bazy danych z którą będzie się komunikował się serwer
-należy w pliku `/server/server-config.js` zmodyfikować wartość atrybutu `connectionString`.
+<a href="http://www.angular.io/" target="_blank">Angular</a><br>
+<a href="https://v4-alpha.getbootstrap.com/" target="_blank">Bootstrap 4</a><br>
+<a href="https://nodejs.org/" target="_blank">Node.js</a><br>
+<a href="http://expressjs.com/" target="_blank">Express</a><br>
+<a href="https://www.npmjs.com/package/bcryptjs" target="_blank">bcryptjs</a><br>
+<a href="https://www.npmjs.com/package/jsonwebtoken" target="_blank">jsonwebtoken</a><br>
+<a href="https://www.npmjs.com/package/morgan" target="_blank">morgan</a><br>
+<a href="https://www.npmjs.com/package/bigdecimal" target="_blank">bigdecimal</a><br>
 
-## Instalacja pakietów npm
+## Configure database and create tables
 
-Przed pierwszym uruchomieniem aplikacji konieczne jest pobranie pakietów wymienionych
-w pliku `package.json`. W głównym katalogu aplikacji należy wykonać polecenie:
+Create new database in PostgreSQL. Run SQL commands from `/database/database.sql`
+file to create tables and indexes. You can run commands from `/database/sample_data.sql`
+file to load sample data.
+
+Configure databse connection string in `/server/server-config.js` (attribute
+`connectionString`).
+
+## Install npm packages
+
+Before first run you need to install necessary node packages, run the
+following commands in your terminal:
 
 ```shell
 npm install
@@ -25,19 +39,19 @@ cd client
 npm install
 ```
 
-## Uruchomienie aplikacji
+## Running application
 
-W głównym katalogu aplikacji należy wykonać polecenie:
+Run the following commands in you terminal:
 
 ```shell
 npm start
 ```
 
-Następnie w nowym oknie konsoli należy z głównego okna aplikacji wykonać polecenie:
+In another terminal window run the following commands:
 
 ```shell
 cd client
 npm start
 ```
 
-W przeglądarce należy przejść do adresu `http://localhost:3000/`.
+In web browser enter `http://localhost:3000/` address.
